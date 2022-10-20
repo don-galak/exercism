@@ -2,6 +2,7 @@ package tournament
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -41,26 +42,31 @@ func (teams Teams) Swap(i, j int) {
 }
 
 func (teams Teams) Less(i, j int) bool {
-	if teams[i].Name == teams[j].Name {
-		return string(teams[i].Name[0]) > string(teams[j].Name[0])
+	if teams[i].Points == teams[j].Points {
+		return string(teams[i].Name[0]) < string(teams[j].Name[0])
 	}
 
 	return teams[i].Points > teams[j].Points
 }
 
 func Tally(reader io.Reader, writer io.Writer) error {
-	endsWith_OutcomeReg := regexp.MustCompile(`.*draw|win|loss$`)
+	isValidRegex := regexp.MustCompile(`[^@_]^.*draw|win|loss.*$`)
+	endsWithOutcomeReg := regexp.MustCompile(`.*draw|win|loss$`)
 
 	input, err := ioutil.ReadAll(reader)
 	if err != nil {
 		panic(err)
 	}
 
-	etled := s.Split(string(input), "\n")
+	if !isValidRegex.MatchString(string(input)) {
+		return errors.New("invalid input")
+	}
+
+	extracted := s.Split(string(input), "\n")
 	teamMap := make(map[string]*Team)
 
-	for _, m := range etled {
-		if endsWith_OutcomeReg.MatchString(m) {
+	for _, m := range extracted {
+		if endsWithOutcomeReg.MatchString(m) {
 			values := s.Split(m, ";")
 			home := values[0]
 			away := values[1]
