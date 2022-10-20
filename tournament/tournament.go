@@ -10,6 +10,8 @@ import (
 	s "strings"
 )
 
+const lenOfPadded = 30
+
 type Team struct {
 	Name   string
 	Played int
@@ -17,6 +19,16 @@ type Team struct {
 	Drawn  int
 	Lost   int
 	Points int
+}
+
+func (team *Team) padWithSpaces(name string) {
+	if team.Name == "" {
+		team.Name = name
+		addedMustBe := lenOfPadded - len(name)
+		for i := 0; i < addedMustBe; i++ {
+			team.Name += " "
+		}
+	}
 }
 
 type Teams []Team
@@ -45,8 +57,7 @@ func Tally(reader io.Reader, writer io.Writer) error {
 	}
 
 	etled := s.Split(string(input), "\n")
-	mapped := make(map[string]*Team)
-	const lenOfPadded = 30
+	teamMap := make(map[string]*Team)
 
 	for _, m := range etled {
 		if endsWith_OutcomeReg.MatchString(m) {
@@ -55,45 +66,39 @@ func Tally(reader io.Reader, writer io.Writer) error {
 			away := values[1]
 			outcome := values[2]
 
-			if _, exists := mapped[home]; !exists {
-				mapped[home] = &Team{}
+			if _, exists := teamMap[home]; !exists {
+				teamMap[home] = &Team{}
 			}
 
-			if _, exists := mapped[away]; !exists {
-				mapped[away] = &Team{}
+			if _, exists := teamMap[away]; !exists {
+				teamMap[away] = &Team{}
 			}
 
-			if mapped[home].Name == "" {
-				mapped[home].Name = home
-
-				addedMustBe := lenOfPadded - len(home)
-				for i := 0; i < addedMustBe; i++ {
-					mapped[home].Name += " "
-				}
-			}
+			teamMap[home].padWithSpaces(home)
+			teamMap[away].padWithSpaces(away)
 
 			switch outcome {
 			case "win":
-				mapped[home].Won += 1
-				mapped[home].Points += 3
-				mapped[away].Lost += 1
+				teamMap[home].Won += 1
+				teamMap[home].Points += 3
+				teamMap[away].Lost += 1
 			case "loss":
-				mapped[home].Lost += 1
-				mapped[away].Won += 1
-				mapped[away].Points += 3
+				teamMap[home].Lost += 1
+				teamMap[away].Won += 1
+				teamMap[away].Points += 3
 			default:
-				mapped[home].Drawn += 1
-				mapped[away].Drawn += 1
-				mapped[home].Points += 1
-				mapped[away].Points += 1
+				teamMap[home].Drawn += 1
+				teamMap[away].Drawn += 1
+				teamMap[home].Points += 1
+				teamMap[away].Points += 1
 			}
-			mapped[home].Played += 1
-			mapped[away].Played += 1
+			teamMap[home].Played += 1
+			teamMap[away].Played += 1
 		}
 	}
 
 	var teams Teams
-	for _, t := range mapped {
+	for _, t := range teamMap {
 		teams = append(teams, *t)
 	}
 
