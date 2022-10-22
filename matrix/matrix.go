@@ -1,6 +1,7 @@
 package matrix
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 )
@@ -18,9 +19,18 @@ func New(s string) (*Matrix, error) {
 		rowInputs := strings.Split(r, " ")
 		data = append(data, []int{})
 		for _, char := range rowInputs {
-			if value, err := strconv.Atoi(strings.TrimLeft(string(char), " ")); err == nil {
+			toString := strings.TrimLeft(string(char), " ")
+			if value, err := strconv.Atoi(toString); err == nil {
 				data[i] = append(data[i], value)
+			} else if err != nil && toString != "" {
+				return nil, err
 			}
+		}
+	}
+
+	for i := range data {
+		if len(data[i]) != len(data[0]) {
+			return nil, errors.New("matrix rows have inconsistent length")
 		}
 	}
 
