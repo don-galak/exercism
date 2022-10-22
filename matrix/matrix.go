@@ -51,5 +51,13 @@ func (m *Matrix) Rows() (rows [][]int) {
 }
 
 func (m *Matrix) Set(row, col, val int) bool {
-	panic("Please implement the Set function")
+	rowLen := len(m.data)
+	colLen := len(m.data[0])
+
+	if row < 0 || col < 0 || row >= rowLen || col >= colLen {
+		return false
+	}
+
+	m.data[row][col] = val
+	return true
 }
