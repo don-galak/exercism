@@ -12,25 +12,22 @@ type Matrix struct {
 }
 
 func New(s string) (*Matrix, error) {
-	splitted := strings.Split(s, "\n")
+	rows := strings.Split(s, "\n")
 	var data [][]int
 
-	for i, r := range splitted {
-		rowInputs := strings.Split(r, " ")
+	for i, row := range rows {
+		r := strings.Fields(row)
+		if i > 0 && len(r) != len(data[i-1]) {
+			return nil, errors.New("matrix rows have inconsistent length")
+		}
+
 		data = append(data, []int{})
-		for _, char := range rowInputs {
-			toString := strings.TrimLeft(string(char), " ")
-			if value, err := strconv.Atoi(toString); err == nil {
-				data[i] = append(data[i], value)
-			} else if err != nil && toString != "" {
+		for _, char := range r {
+			value, err := strconv.Atoi(char)
+			if err != nil {
 				return nil, err
 			}
-		}
-	}
-
-	for i := range data {
-		if len(data[i]) != len(data[0]) {
-			return nil, errors.New("matrix rows have inconsistent length")
+			data[i] = append(data[i], value)
 		}
 	}
 
