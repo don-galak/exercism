@@ -2,7 +2,6 @@ package erratum
 
 func Use(opener ResourceOpener, input string) (err error) {
 	var resource Resource
-
 	for {
 		resource, err = opener()
 		if _, ok := err.(TransientError); ok {
@@ -17,15 +16,10 @@ func Use(opener ResourceOpener, input string) (err error) {
 
 	defer func() {
 		if rec := recover(); rec != nil {
-			switch recoverError := rec.(type) {
-			case FrobError:
+			if recoverError, ok := rec.(FrobError); ok {
 				resource.Defrob(recoverError.defrobTag)
-				err = recoverError.inner
-			case error:
-				err = recoverError
-			default:
-				err = nil
 			}
+			err, _ = rec.(error)
 		}
 		resource.Close()
 	}()
