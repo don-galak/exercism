@@ -230,7 +230,6 @@ func TestConcClose(t *testing.T) {
 }
 
 func TestConcDeposit(t *testing.T) {
-	t.Skip("Multiple CPU cores required for concurrency tests.")
 	if runtime.NumCPU() < 2 {
 		t.Skip("Multiple CPU cores required for concurrency tests.")
 	}
