@@ -5,13 +5,13 @@
 // https://golang.org/doc/effective_go.html#commentary
 package triangle
 
-type Kind string
+type Kind int
 
 const (
-	Equ = "Equ"
-	Iso = "Iso"
-	Sca = "Sca"
-	NaT = "NaT"
+	Equ Kind = iota
+	Iso
+	Sca
+	NaT
 )
 
 func KindFromSides(a, b, c float64) Kind {
