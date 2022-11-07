@@ -2,7 +2,6 @@ package protein
 
 import (
 	"errors"
-	"fmt"
 )
 
 var ErrStop = errors.New("error stop")
@@ -20,34 +19,25 @@ var codonMap = map[string]string{
 }
 
 func FromRNA(rna string) ([]string, error) {
-	proteinMap := map[string]int{}
-	protein := []string{}
-
+	result := []string{}
 	for i := 0; i < len(rna); i += 3 {
-		codon := fmt.Sprintf("%v%v%v", string(rna[i]), string(rna[i+1]), string(rna[i+2]))
-
-		if _, err := FromCodon(codon); err == ErrInvalidBase {
+		protein, err := FromCodon(rna[i : i+3])
+		if err == ErrInvalidBase {
 			return nil, ErrInvalidBase
 		} else if err == ErrStop {
 			break
 		}
-
-		if _, exists := proteinMap[codonMap[codon]]; !exists {
-			proteinMap[codonMap[codon]] = 1
-			protein = append(protein, codonMap[codon])
-		}
+		result = append(result, protein)
 	}
-	return protein, nil
+	return result, nil
 }
 
 func FromCodon(codon string) (string, error) {
-	if _, exists := codonMap[codon]; !exists {
+	protein, exists := codonMap[codon]
+	if !exists {
 		return "", ErrInvalidBase
-	}
-
-	if codonMap[codon] == "STOP" {
+	} else if protein == "STOP" {
 		return "", ErrStop
 	}
-
-	return codonMap[codon], nil
+	return protein, nil
 }
