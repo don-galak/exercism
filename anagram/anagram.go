@@ -1,26 +1,32 @@
 package anagram
 
-import (
-	"sort"
-	"strings"
-)
+import "strings"
 
-func sortString(str string) string {
-	toArr := strings.Split(strings.ToLower(str), "")
-	sort.Strings(toArr)
-	return strings.Join(toArr, "")
+// first 26 prime numbers, with n equal to the number of letters in latin alphabet
+// will it work for other alphabets?
+var primes = [26]uint{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101}
+
+// TODO - Collisions are possible with unicode strings
+func hashString(in string) uint {
+	var hash uint = 1
+	for _, v := range in {
+		hash *= primes[v%26]
+	}
+	return hash
 }
 
-func Detect(subject string, candidates []string) (out []string) {
-	for _, candidate := range candidates {
-		if strings.EqualFold(subject, candidate) {
-			continue
-		}
-
-		if sortString(subject) == sortString(candidate) {
-			out = append(out, candidate)
+// Detect returns a list of anagrams
+func Detect(in string, cands []string) []string {
+	in = strings.ToLower(in)
+	inHash := hashString(in)
+	results := cands[:0] // Reuse allocated space
+	for _, cand := range cands {
+		if len(cand) == len(in) {
+			candLower := strings.ToLower(cand)
+			if candLower != in && hashString(candLower) == inHash {
+				results = append(results, cand)
+			}
 		}
 	}
-
-	return
+	return results
 }
