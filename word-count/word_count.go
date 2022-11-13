@@ -7,16 +7,14 @@ import (
 
 type Frequency map[string]int
 
-var re = regexp.MustCompile(`[ |,|\n|\:|\!|\@|\&|\$|\%|\^|\.]`)
+var re = regexp.MustCompile(`\w+('\w+)?`)
 
 func WordCount(phrase string) Frequency {
-	f := Frequency{}
-	sanitized := re.Split(phrase, -1)
-	for _, w := range sanitized {
-		trimmedWord := strings.Trim(w, "' ")
-		if len(trimmedWord) > 0 {
-			f[strings.ToLower(trimmedWord)]++
-		}
+	f := make(Frequency)
+	words := re.FindAllString(phrase, -1)
+	for _, w := range words {
+		word := strings.ToLower(w)
+		f[word] += 1
 	}
 	return f
 }
