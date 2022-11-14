@@ -1,27 +1,20 @@
 package isbn
 
-import (
-	"strings"
-	"unicode"
-)
-
 func IsValidISBN(isbn string) bool {
-	isbn = strings.ReplaceAll(isbn, "-", "")
-	isbnLen := len(isbn)
-	if isbnLen != 10 {
-		return false
-	}
 	result := 0
-
-	for i, digit := range isbn {
-		if unicode.IsDigit(digit) {
-			result = result + int(digit-'0')*(isbnLen-i)
-		} else if i == isbnLen-1 && digit == 'X' {
-			result = result + 10*(isbnLen-i)
+	n := 0
+	for i := 0; i < len(isbn); i++ {
+		if isbn[i] <= byte('9') && isbn[i] >= byte('0') {
+			result += int(isbn[i]-byte('0')) * (10 - n)
+			n++
+		} else if isbn[i] == byte('X') && n == 9 {
+			result += 10
+			n++
+		} else if isbn[i] == byte('-') && n < 10 {
+			continue
 		} else {
 			return false
 		}
 	}
-
-	return result%11 == 0
+	return result%11 == 0 && n == 10
 }
