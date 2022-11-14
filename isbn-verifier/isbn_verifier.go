@@ -1,8 +1,8 @@
 package isbn
 
 import (
-	"strconv"
 	"strings"
+	"unicode"
 )
 
 func IsValidISBN(isbn string) bool {
@@ -11,18 +11,15 @@ func IsValidISBN(isbn string) bool {
 	if isbnLen != 10 {
 		return false
 	}
-
 	result := 0
 
 	for i, digit := range isbn {
-		if toNum, err := strconv.Atoi(string(digit)); err != nil {
-			if i == isbnLen-1 && digit == 'X' {
-				result = result + 10*(isbnLen-i)
-			} else {
-				return false
-			}
+		if unicode.IsDigit(digit) {
+			result = result + int(digit-'0')*(isbnLen-i)
+		} else if i == isbnLen-1 && digit == 'X' {
+			result = result + 10*(isbnLen-i)
 		} else {
-			result = result + toNum*(isbnLen-i)
+			return false
 		}
 	}
 
