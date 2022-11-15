@@ -12,28 +12,35 @@ var (
 	re               = regexp.MustCompile(`^\d+$`)
 )
 
-func LargestSeriesProduct(digits string, span int) (int64, error) {
+func sanitizeInput(digits string, span int) (bool, int64, error) {
 	if span > len(digits) {
-		return 0, errLongSpan
+		return true, 0, errLongSpan
 	}
 	if span == 0 {
-		return 1, nil
+		return true, 1, nil
 	}
-	if !re.Match([]byte(digits)) {
-		return 0, errInvalidDigits
+	if !re.MatchString(digits) {
+		return true, 0, errInvalidDigits
 	}
 	if span < 0 {
-		return 0, errNegativeSpan
+		return true, 0, errNegativeSpan
+	}
+
+	return false, 0, nil
+}
+
+func LargestSeriesProduct(digits string, span int) (int64, error) {
+	if invalid, num, err := sanitizeInput(digits, span); invalid {
+		return num, err
 	}
 
 	zeroProd := true
 	var prod int64 = 1
-	counter := len(digits) - span + 1
 
-	for i := 0; i < counter; i++ {
+	for i := 0; i < len(digits)-span+1; i++ {
 		var newProd int64 = 1
 		for _, x := range digits[i : i+span] {
-			newProd *= int64(x - '0')
+			newProd *= int64(x) - '0'
 		}
 
 		if newProd > 0 {
