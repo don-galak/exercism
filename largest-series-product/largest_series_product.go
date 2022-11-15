@@ -9,7 +9,7 @@ var (
 	errLongSpan      = errors.New("span must be smaller than string length")
 	errInvalidDigits = errors.New("digits input must only contain digits")
 	errNegativeSpan  = errors.New("span must not be negative")
-	re               = regexp.MustCompile(`\d`)
+	re               = regexp.MustCompile(`^\d+$`)
 )
 
 func LargestSeriesProduct(digits string, span int) (int64, error) {
@@ -22,32 +22,30 @@ func LargestSeriesProduct(digits string, span int) (int64, error) {
 	if !re.Match([]byte(digits)) {
 		return 0, errInvalidDigits
 	}
-
-	// if _, err := strconv.Atoi(digits); err != nil {
-	// 	return 0, errInvalidDigits
-	// }
 	if span < 0 {
 		return 0, errNegativeSpan
 	}
 
+	zeroProd := true
 	var prod int64 = 1
 	counter := len(digits) - span + 1
-	// for counter > 0 {
-	// 	prod *=
-	// }
-	for i := range digits {
-		if counter == 0 {
-			break
-		}
+
+	for i := 0; i < counter; i++ {
 		var newProd int64 = 1
 		for _, x := range digits[i : i+span] {
 			newProd *= int64(x - '0')
 		}
 
+		if newProd > 0 {
+			zeroProd = false
+		}
+
 		if prod < newProd {
 			prod = newProd
 		}
-		counter--
+	}
+	if zeroProd {
+		return 0, nil
 	}
 
 	return prod, nil
