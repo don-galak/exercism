@@ -2,25 +2,20 @@ package lsproduct
 
 import (
 	"errors"
-	"regexp"
 )
 
 var (
 	errLongSpan      = errors.New("span must be smaller than string length")
 	errInvalidDigits = errors.New("digits input must only contain digits")
 	errNegativeSpan  = errors.New("span must not be negative")
-	re               = regexp.MustCompile(`^\d+$`)
 )
 
-func sanitizeInput(digits string, span int) (bool, int64, error) {
+func validateInput(digits string, span int) (bool, int64, error) {
 	if span > len(digits) {
 		return true, 0, errLongSpan
 	}
 	if span == 0 {
 		return true, 1, nil
-	}
-	if !re.MatchString(digits) {
-		return true, 0, errInvalidDigits
 	}
 	if span < 0 {
 		return true, 0, errNegativeSpan
@@ -30,16 +25,20 @@ func sanitizeInput(digits string, span int) (bool, int64, error) {
 }
 
 func LargestSeriesProduct(digits string, span int) (int64, error) {
-	if invalid, num, err := sanitizeInput(digits, span); invalid {
+	if invalid, num, err := validateInput(digits, span); invalid {
 		return num, err
 	}
 
 	zeroProd := true
-	var prod int64 = 1
+	var prod int64 = 0
 
 	for i := 0; i < len(digits)-span+1; i++ {
 		var newProd int64 = 1
 		for _, x := range digits[i : i+span] {
+			if x < '0' || x > '9' {
+				return 0, errInvalidDigits
+			}
+
 			newProd *= int64(x) - '0'
 		}
 
@@ -47,7 +46,7 @@ func LargestSeriesProduct(digits string, span int) (int64, error) {
 			zeroProd = false
 		}
 
-		if prod < newProd {
+		if newProd > prod {
 			prod = newProd
 		}
 	}
