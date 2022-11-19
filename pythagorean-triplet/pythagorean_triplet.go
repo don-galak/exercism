@@ -1,38 +1,34 @@
 package pythagorean
 
+import "math"
+
 type Triplet [3]int
 
 func (t Triplet) qualifiesSum(p int) bool {
-	if t[0]+t[1]+t[2] == p {
-		return true
-	}
-	return false
+	return t[0]+t[1]+t[2] == p
 }
 
-func isPythagoreanTriplet(x, y, z int) bool {
+func getPythagoreanTriplet(x, y, z int) (bool, Triplet) {
 	if x == y+z || y == x+z || z == y+x {
-		return true
+		return true, Triplet{int((math.Sqrt(float64(x)))), int((math.Sqrt(float64(y)))), int((math.Sqrt(float64(z))))}
 	}
-	return false
+	return false, Triplet{}
 }
 
 // Range generates list of all Pythagorean triplets with side lengths
 // in the provided range.
 func Range(min, max int) []Triplet {
-	arr := []int{}
+	intArr := []int{}
 	for i := min; i < max+1; i++ {
-		arr = append(arr, i)
+		intArr = append(intArr, i*i)
 	}
 	triplets := []Triplet{}
 
-	for i := 0; i < len(arr); i++ {
-		for j := i + 1; j < len(arr); j++ {
-			for k := j + 1; k < len(arr); k++ {
-				x := arr[i] * arr[i]
-				y := arr[j] * arr[j]
-				z := arr[k] * arr[k]
-				if isPythagoreanTriplet(x, y, z) {
-					triplets = append(triplets, Triplet{arr[i], arr[j], arr[k]})
+	for i := 0; i < len(intArr); i++ {
+		for j := i + 1; j < len(intArr); j++ {
+			for k := j + 1; k < len(intArr); k++ {
+				if f, triplet := getPythagoreanTriplet(intArr[i], intArr[j], intArr[k]); f {
+					triplets = append(triplets, triplet)
 				}
 			}
 		}
