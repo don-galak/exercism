@@ -21,11 +21,11 @@ func RotationalCipher(plain string, shiftKey int) string {
 		shifted := r + rune(shiftKey)
 		if r >= a && r <= z {
 			if shifted > z {
-				shifted = a + (z - r)
+				shifted = a + (shifted - z - 1)
 			}
 		} else if r >= A && r <= Z {
 			if shifted > Z {
-				shifted = A + (Z - r)
+				shifted = A + (shifted - Z - 1)
 			}
 		} else {
 			shifted = r
