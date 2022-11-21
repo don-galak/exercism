@@ -1,31 +1,35 @@
 package atbash
 
 import (
-	"strconv"
+	"regexp"
 	"strings"
 )
 
 const (
-	a = 97
-	z = 122
-	Z = 90
-	A = 65
+	zero = 48
+	nine = 57
+	a    = 97
+	z    = 122
+	Z    = 90
+	A    = 65
 )
+
+var re = regexp.MustCompile(`[^a-zA-Z0-9]+`)
 
 func Atbash(s string) string {
 	var w strings.Builder
-	s = strings.ReplaceAll(s, " .,", "")
-	println(s)
+	s = re.ReplaceAllString(s, "")
 	for i, r := range s {
-		if _, err := strconv.Atoi(string(r)); err == nil {
-			w.WriteRune(r)
-		} else if r >= a && r <= z {
-			w.WriteRune(z - (r - a))
-		} else if r >= A && r <= Z {
-			w.WriteRune(Z - (r - A) + 32)
+		if i != 0 && i%5 == 0 {
+			w.WriteRune(' ')
 		}
-		if i+1%5 == 0 {
-			w.WriteString(" ")
+		switch {
+		case r >= zero && r <= nine:
+			w.WriteRune(r)
+		case r >= a && r <= z:
+			w.WriteRune(z - (r - a))
+		case r >= A && r <= Z:
+			w.WriteRune(Z - (r - A) + 32)
 		}
 	}
 	return w.String()
