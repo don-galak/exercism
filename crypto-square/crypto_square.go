@@ -7,6 +7,9 @@ import (
 )
 
 func Encode(pt string) string {
+	if pt == "" {
+		return ""
+	}
 	var w bytes.Buffer
 
 	for _, r := range strings.ToLower(pt) {
@@ -17,37 +20,33 @@ func Encode(pt string) string {
 			w.WriteRune(r)
 		}
 	}
-	sqRoot := math.Sqrt(float64(w.Len()))
-	lol := []string{}
-	var c int
-	var r int
-	if floored := math.Floor(sqRoot); sqRoot-floored == 0 {
-		c = int(sqRoot)
-		r = c
 
-	} else {
-		c = int(floored) + 1
-		r = int(floored)
-		println("C: ", c, "R: ", r)
+	l := w.Len()
+	c := int(math.Ceil(math.Sqrt(float64(l))))
+	r := int(math.Ceil(float64(l) / float64(c)))
+	byt := w.Bytes()
+
+	matrix := make([][]rune, r)
+	for i := 0; i < r; i++ {
+		matrix[i] = make([]rune, c)
+		for j := 0; j < c; j++ {
+			if i*c+j < l {
+				matrix[i][j] = rune(byt[i*c+j])
+			} else {
+				matrix[i][j] = ' '
+			}
+		}
 	}
-	for w.Len() < c*r {
-		w.WriteRune(' ')
+
+	w.Reset()
+	for j := 0; j < c; j++ {
+		for i := 0; i < r; i++ {
+			w.WriteRune(rune(matrix[i][j]))
+		}
+		if j+1 < c {
+			w.WriteRune(' ')
+		}
 	}
 
-	for i := 0; i < w.Len(); i += r {
-		lol = append(lol, w.String()[i:i+c-1])
-	}
-	println(strings.Join(lol, ""), w.String(), pt)
-	// for _, k := range lol {
-	// 	println(k)
-	// }
-	// for i := 0; i < c; i++ {
-	// 	for j := 0; j < r; j++ {
-	// 		lol[i][j] += w.String()[i+j]
-	// 	}
-	// }
-
-	// println(w.String(), sqRoot)
-
-	return ""
+	return w.String()
 }
