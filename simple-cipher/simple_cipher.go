@@ -1,11 +1,17 @@
 package cipher
 
-import "bytes"
+import (
+	"bytes"
+	"regexp"
+	"strings"
+)
 
 const (
 	a = 'a'
 	z = 'z'
 )
+
+var reg = regexp.MustCompile(`[^a-z]+`)
 
 type shift struct {
 	distance int
@@ -17,16 +23,27 @@ func NewCaesar() Cipher {
 }
 
 func NewShift(distance int) Cipher {
+	if distance > 25 || distance < -25 || distance == 0 {
+		return nil
+	}
+
 	return &shift{distance: distance}
 }
 
 func (c shift) Encode(input string) string {
+	input = strings.ToLower(input)
+	input = reg.ReplaceAllString(input, "")
+
 	var w bytes.Buffer
 
 	for _, letter := range input {
 		var t rune
-		if sum := letter + rune(c.distance); sum > z {
+		sum := letter + rune(c.distance)
+
+		if sum > z {
 			t = a + sum - z - 1
+		} else if sum < a {
+			t = z + sum - a + 1
 		} else {
 			t = sum
 		}
@@ -36,20 +53,8 @@ func (c shift) Encode(input string) string {
 }
 
 func (c shift) Decode(input string) string {
-	// c.distance = -c.distance
-	// return c.Encode(input)
-	var w bytes.Buffer
-
-	for _, letter := range input {
-		var t rune
-		if diff := letter - rune(c.distance); diff < a {
-			t = z + diff - a + 1
-		} else {
-			t = diff
-		}
-		w.WriteRune(t)
-	}
-	return w.String()
+	c.distance = -c.distance
+	return c.Encode(input)
 }
 
 func NewVigenere(key string) Cipher {

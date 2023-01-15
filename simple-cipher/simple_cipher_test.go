@@ -19,24 +19,24 @@ var caesarPrepped = []cipherTest{
 	{"venividivici", "yhqlylglylfl", "venividivici"},
 }
 
-// var caesarTests = []cipherTest{
-// 	{"Go, go, gophers", "jrjrjrskhuv", "gogogophers"},
-// 	{"I am a panda bear.", "ldpdsdqgdehdu", "iamapandabear"},
-// 	{"Programming is AWESOME!", "surjudpplqjlvdzhvrph", "programmingisawesome"},
-// 	{"today is holiday", "wrgdblvkrolgdb", "todayisholiday"},
-// 	{"Twas the night before Christmas", "wzdvwkhqljkwehiruhfkulvwpdv", "twasthenightbeforechristmas"},
-// 	{" -- @#!", "", ""},
-// 	{"", "", ""},
-// }
+var caesarTests = []cipherTest{
+	{"Go, go, gophers", "jrjrjrskhuv", "gogogophers"},
+	{"I am a panda bear.", "ldpdsdqgdehdu", "iamapandabear"},
+	{"Programming is AWESOME!", "surjudpplqjlvdzhvrph", "programmingisawesome"},
+	{"today is holiday", "wrgdblvkrolgdb", "todayisholiday"},
+	{"Twas the night before Christmas", "wzdvwkhqljkwehiruhfkulvwpdv", "twasthenightbeforechristmas"},
+	{" -- @#!", "", ""},
+	{"", "", ""},
+}
 
 func TestCaesar(t *testing.T) {
 	c := NewCaesar()
 	t.Run("no extra symbols", func(t *testing.T) {
 		testCipher(c, caesarPrepped, t)
 	})
-	// t.Run("with extra symbols", func(t *testing.T) {
-	// 	testCipher(c, caesarTests, t)
-	// })
+	t.Run("with extra symbols", func(t *testing.T) {
+		testCipher(c, caesarTests, t)
+	})
 }
 
 func testCipher(c Cipher, tests []cipherTest, t *testing.T) {
@@ -54,47 +54,47 @@ func testCipher(c Cipher, tests []cipherTest, t *testing.T) {
 	}
 }
 
-// var NSATests = []cipherTest{
-// 	{"THE ENEMY IS NEAR", "qebbkbjvfpkbxo", "theenemyisnear"},
-// 	{"SPIES SEND SECRET MESSAGES",
-// 		"pmfbppbkapbzobqjbppxdbp",
-// 		"spiessendsecretmessages"},
-// 	{"THOMAS JEFFERSON DESIGNED A SUBSTITUTION CIPHER",
-// 		"qeljxpgbccboplkabpfdkbaxprypqfqrqflkzfmebo",
-// 		"thomasjeffersondesignedasubstitutioncipher"},
-// 	{"the quick brown fox jumps over the lazy dog",
-// 		"qebnrfzhyoltkclugrjmplsboqebixwvald",
-// 		"thequickbrownfoxjumpsoverthelazydog"},
-// }
+var NSATests = []cipherTest{
+	{"THE ENEMY IS NEAR", "qebbkbjvfpkbxo", "theenemyisnear"},
+	{"SPIES SEND SECRET MESSAGES",
+		"pmfbppbkapbzobqjbppxdbp",
+		"spiessendsecretmessages"},
+	{"THOMAS JEFFERSON DESIGNED A SUBSTITUTION CIPHER",
+		"qeljxpgbccboplkabpfdkbaxprypqfqrqflkzfmebo",
+		"thomasjeffersondesignedasubstitutioncipher"},
+	{"the quick brown fox jumps over the lazy dog",
+		"qebnrfzhyoltkclugrjmplsboqebixwvald",
+		"thequickbrownfoxjumpsoverthelazydog"},
+}
 
-// func TestShift(t *testing.T) {
-// 	// test shift(3) against Caesar cases.
-// 	t.Run(fmt.Sprintf("key=%d", 3), func(t *testing.T) {
-// 		c := NewShift(3)
-// 		if c == nil {
-// 			t.Fatal("NewShift(3): got nil, want non-nil Cipher")
-// 		}
-// 		testCipher(c, caesarTests, t)
-// 	})
+func TestShift(t *testing.T) {
+	// test shift(3) against Caesar cases.
+	t.Run(fmt.Sprintf("key=%d", 3), func(t *testing.T) {
+		c := NewShift(3)
+		if c == nil {
+			t.Fatal("NewShift(3): got nil, want non-nil Cipher")
+		}
+		testCipher(c, caesarTests, t)
+	})
 
-// 	// NSA and WP say Caesar uses shift of -3
-// 	t.Run(fmt.Sprintf("key=%d", -3), func(t *testing.T) {
-// 		c := NewShift(-3)
-// 		if c == nil {
-// 			t.Fatal("NewShift(-3): got nil, want non-nil Cipher")
-// 		}
-// 		testCipher(c, NSATests, t)
-// 	})
+	// NSA and WP say Caesar uses shift of -3
+	t.Run(fmt.Sprintf("key=%d", -3), func(t *testing.T) {
+		c := NewShift(-3)
+		if c == nil {
+			t.Fatal("NewShift(-3): got nil, want non-nil Cipher")
+		}
+		testCipher(c, NSATests, t)
+	})
 
-// }
+}
 
-// func TestWrongShiftKey(t *testing.T) {
-// 	for _, s := range []int{-27, -26, 0, 26, 27} {
-// 		if NewShift(s) != nil {
-// 			t.Errorf("NewShift(%d): got non-nil, want nil", s)
-// 		}
-// 	}
-// }
+func TestWrongShiftKey(t *testing.T) {
+	for _, s := range []int{-27, -26, 0, 26, 27} {
+		if NewShift(s) != nil {
+			t.Errorf("NewShift(%d): got non-nil, want nil", s)
+		}
+	}
+}
 
 // var vtests = []struct {
 // 	key   string
