@@ -26,32 +26,29 @@ func (c shift) Encode(input string) string {
 	for _, letter := range input {
 		var t rune
 		if sum := letter + rune(c.distance); sum > z {
-			t = a + sum - z
+			t = a + sum - z - 1
 		} else {
 			t = sum
 		}
 		w.WriteRune(t)
 	}
-
 	return w.String()
 }
 
 func (c shift) Decode(input string) string {
+	// c.distance = -c.distance
+	// return c.Encode(input)
 	var w bytes.Buffer
 
 	for _, letter := range input {
 		var t rune
-		if diff := letter + rune(c.distance); diff > z {
-			t = z - rune(c.distance) - diff
+		if diff := letter - rune(c.distance); diff < a {
+			t = z + diff - a + 1
 		} else {
 			t = diff
 		}
-		println(string(letter), string(t))
 		w.WriteRune(t)
 	}
-
-	// println(w.String())
-
 	return w.String()
 }
 
