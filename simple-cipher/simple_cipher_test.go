@@ -96,46 +96,46 @@ func TestWrongShiftKey(t *testing.T) {
 	}
 }
 
-// var vtests = []struct {
-// 	key   string
-// 	tests []cipherTest
-// }{
-// 	{"lemon", []cipherTest{{"ATTACKATDAWN", "lxfopvefrnhr", "attackatdawn"}}},
-// 	{"abcdefghij", []cipherTest{
-// 		{"aaaaaaaaaa", "abcdefghij", "aaaaaaaaaa"},
-// 		{"zzzzzzzzzz", "zabcdefghi", "zzzzzzzzzz"},
-// 	}},
-// 	{"iamapandabear", []cipherTest{
-// 		{"I am a panda bear.", "qayaeaagaciai", "iamapandabear"},
-// 	}},
-// 	{"duxrceqyaimciuucnelkeoxjhdyduu", []cipherTest{
-// 		{"Diffie Hellman", "gccwkixcltycv", "diffiehellman"},
-// 	}},
-// 	{"qgbvno", []cipherTest{
-// 		{"cof-FEE, 123!", "sugars", "coffee"},
-// 	}},
-// }
+var vtests = []struct {
+	key   string
+	tests []cipherTest
+}{
+	{"lemon", []cipherTest{{"ATTACKATDAWN", "lxfopvefrnhr", "attackatdawn"}}},
+	{"abcdefghij", []cipherTest{
+		{"aaaaaaaaaa", "abcdefghij", "aaaaaaaaaa"},
+		{"zzzzzzzzzz", "zabcdefghi", "zzzzzzzzzz"},
+	}},
+	{"iamapandabear", []cipherTest{
+		{"I am a panda bear.", "qayaeaagaciai", "iamapandabear"},
+	}},
+	{"duxrceqyaimciuucnelkeoxjhdyduu", []cipherTest{
+		{"Diffie Hellman", "gccwkixcltycv", "diffiehellman"},
+	}},
+	{"qgbvno", []cipherTest{
+		{"cof-FEE, 123!", "sugars", "coffee"},
+	}},
+}
 
-// func TestVigenere(t *testing.T) {
-// 	for _, test := range vtests {
-// 		t.Run(fmt.Sprintf("key=%s", test.key), func(t *testing.T) {
-// 			v := NewVigenere(test.key)
-// 			if v == nil {
-// 				t.Fatalf("NewVigenere(%q): got nil, want non-nil Cipher",
-// 					test.key)
-// 			}
-// 			testCipher(v, test.tests, t)
-// 		})
-// 	}
-// }
+func TestVigenere(t *testing.T) {
+	for _, test := range vtests {
+		t.Run(fmt.Sprintf("key=%s", test.key), func(t *testing.T) {
+			v := NewVigenere(test.key)
+			if v == nil {
+				t.Fatalf("NewVigenere(%q): got nil, want non-nil Cipher",
+					test.key)
+			}
+			testCipher(v, test.tests, t)
+		})
+	}
+}
 
-// func TestVigenereWrongKey(t *testing.T) {
-// 	for _, k := range []string{"", "a", "aa", "no way", "CAT", "3", "and,"} {
-// 		if NewVigenere(k) != nil {
-// 			t.Errorf("NewVigenere(%q): got non-nil, want nil", k)
-// 		}
-// 	}
-// }
+func TestVigenereWrongKey(t *testing.T) {
+	for _, k := range []string{"", "a", "aa", "no way", "CAT", "3", "and,"} {
+		if NewVigenere(k) != nil {
+			t.Errorf("NewVigenere(%q): got non-nil, want nil", k)
+		}
+	}
+}
 
 // // Benchmark combined time to run all tests.
 // // Note other ciphers test different data; times cannot be compared.

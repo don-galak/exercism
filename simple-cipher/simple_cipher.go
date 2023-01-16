@@ -13,10 +13,16 @@ const (
 
 var reg = regexp.MustCompile(`[^a-z]+`)
 
+func sanitizeInput(input string) string {
+	return reg.ReplaceAllString(strings.ToLower(input), "")
+}
+
 type shift struct {
 	distance int
 }
-type vigenere struct{}
+type vigenere struct {
+	key string
+}
 
 func NewCaesar() Cipher {
 	return &shift{distance: 3}
@@ -31,8 +37,7 @@ func NewShift(distance int) Cipher {
 }
 
 func (c shift) Encode(input string) string {
-	input = strings.ToLower(input)
-	input = reg.ReplaceAllString(input, "")
+	input = sanitizeInput(input)
 
 	var w bytes.Buffer
 
@@ -58,11 +63,53 @@ func (c shift) Decode(input string) string {
 }
 
 func NewVigenere(key string) Cipher {
-	panic("Please implement the NewVigenere function")
+	if reg.MatchString(key) {
+		return nil
+	}
+
+	keyLen := len(key)
+
+	if keyLen == 0 || keyLen == 1 {
+		return nil
+	}
+
+	firstChar := key[0]
+	for _, l := range key {
+		if l != rune(firstChar) {
+			return &vigenere{key: key}
+		}
+	}
+
+	return nil
 }
 
 func (v vigenere) Encode(input string) string {
-	panic("Please implement the Encode function")
+	input = sanitizeInput(input)
+
+	var w bytes.Buffer
+	shiftLen := len(v.key)
+	shiftIndex := 0
+
+	for _, letter := range input {
+		if shiftLen <= shiftIndex {
+			shiftIndex = 0
+		}
+
+		var t rune
+		shift := letter + rune(v.key[shiftIndex]) - a
+
+		if shift > z {
+			t = a + shift - z - 1
+		} else if shift < a {
+			t = z + shift - a + 1
+		} else {
+			t = shift
+		}
+		w.WriteRune(t)
+		shiftIndex++
+	}
+
+	return w.String()
 }
 
 func (v vigenere) Decode(input string) string {
