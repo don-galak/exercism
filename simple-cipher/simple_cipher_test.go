@@ -137,126 +137,126 @@ func TestVigenereWrongKey(t *testing.T) {
 	}
 }
 
-// // Benchmark combined time to run all tests.
-// // Note other ciphers test different data; times cannot be compared.
-// func BenchmarkEncodeCaesar(b *testing.B) {
-// 	if testing.Short() {
-// 		b.Skip("skipping benchmark in short mode.")
-// 	}
-// 	c := NewCaesar()
-// 	b.ResetTimer()
-// 	for i := 0; i < b.N; i++ {
-// 		for _, test := range caesarTests {
-// 			c.Encode(test.source)
-// 		}
-// 	}
-// }
+// Benchmark combined time to run all tests.
+// Note other ciphers test different data; times cannot be compared.
+func BenchmarkEncodeCaesar(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
+	c := NewCaesar()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for _, test := range caesarTests {
+			c.Encode(test.source)
+		}
+	}
+}
 
-// func BenchmarkDecodeCaesar(b *testing.B) {
-// 	if testing.Short() {
-// 		b.Skip("skipping benchmark in short mode.")
-// 	}
-// 	c := NewCaesar()
-// 	b.ResetTimer()
-// 	for i := 0; i < b.N; i++ {
-// 		for _, test := range caesarTests {
-// 			c.Decode(test.cipher)
-// 		}
-// 	}
-// }
+func BenchmarkDecodeCaesar(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
+	c := NewCaesar()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for _, test := range caesarTests {
+			c.Decode(test.cipher)
+		}
+	}
+}
 
-// func BenchmarkNewShift(b *testing.B) {
-// 	if testing.Short() {
-// 		b.Skip("skipping benchmark in short mode.")
-// 	}
-// 	for i := 0; i < b.N; i++ {
-// 		for s := -27; s <= 27; s++ {
-// 			NewShift(s)
-// 		}
-// 	}
-// }
+func BenchmarkNewShift(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
+	for i := 0; i < b.N; i++ {
+		for s := -27; s <= 27; s++ {
+			NewShift(s)
+		}
+	}
+}
 
-// func BenchmarkEncodeShift(b *testing.B) {
-// 	if testing.Short() {
-// 		b.Skip("skipping benchmark in short mode.")
-// 	}
-// 	s := NewShift(5)
-// 	all := caesarTests
-// 	all = append(all, NSATests...)
-// 	b.ResetTimer()
-// 	for i := 0; i < b.N; i++ {
-// 		for _, test := range all {
-// 			s.Encode(test.source)
-// 		}
-// 	}
-// }
+func BenchmarkEncodeShift(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
+	s := NewShift(5)
+	all := caesarTests
+	all = append(all, NSATests...)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for _, test := range all {
+			s.Encode(test.source)
+		}
+	}
+}
 
-// func BenchmarkDecodeShift(b *testing.B) {
-// 	if testing.Short() {
-// 		b.Skip("skipping benchmark in short mode.")
-// 	}
-// 	s := NewShift(5)
-// 	all := caesarTests
-// 	all = append(all, NSATests...)
-// 	b.ResetTimer()
-// 	for i := 0; i < b.N; i++ {
-// 		for _, test := range all {
-// 			s.Decode(test.cipher)
-// 		}
-// 	}
-// }
+func BenchmarkDecodeShift(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
+	s := NewShift(5)
+	all := caesarTests
+	all = append(all, NSATests...)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for _, test := range all {
+			s.Decode(test.cipher)
+		}
+	}
+}
 
-// func BenchmarkNewVigenere(b *testing.B) {
-// 	if testing.Short() {
-// 		b.Skip("skipping benchmark in short mode.")
-// 	}
-// 	for i := 0; i < b.N; i++ {
-// 		for _, test := range vtests {
-// 			NewVigenere(test.key)
-// 		}
-// 	}
-// }
+func BenchmarkNewVigenere(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
+	for i := 0; i < b.N; i++ {
+		for _, test := range vtests {
+			NewVigenere(test.key)
+		}
+	}
+}
 
-// func BenchmarkEncVigenere(b *testing.B) {
-// 	if testing.Short() {
-// 		b.Skip("skipping benchmark in short mode.")
-// 	}
-// 	v := make([]Cipher, len(vtests))
-// 	for i, test := range vtests {
-// 		v[i] = NewVigenere(test.key)
-// 		if v[i] == nil {
-// 			b.Skip("Benchmark requires valid Vigenere test cases")
-// 		}
-// 	}
-// 	b.ResetTimer()
-// 	for j := 0; j < b.N; j++ {
-// 		for i, test := range vtests {
-// 			vi := v[i]
-// 			for _, test := range test.tests {
-// 				vi.Encode(test.source)
-// 			}
-// 		}
-// 	}
-// }
+func BenchmarkEncVigenere(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
+	v := make([]Cipher, len(vtests))
+	for i, test := range vtests {
+		v[i] = NewVigenere(test.key)
+		if v[i] == nil {
+			b.Skip("Benchmark requires valid Vigenere test cases")
+		}
+	}
+	b.ResetTimer()
+	for j := 0; j < b.N; j++ {
+		for i, test := range vtests {
+			vi := v[i]
+			for _, test := range test.tests {
+				vi.Encode(test.source)
+			}
+		}
+	}
+}
 
-// func BenchmarkDecVigenere(b *testing.B) {
-// 	if testing.Short() {
-// 		b.Skip("skipping benchmark in short mode.")
-// 	}
-// 	v := make([]Cipher, len(vtests))
-// 	for i, test := range vtests {
-// 		v[i] = NewVigenere(test.key)
-// 		if v[i] == nil {
-// 			b.Skip("Benchmark requires valid Vigenere test cases")
-// 		}
-// 	}
-// 	b.ResetTimer()
-// 	for j := 0; j < b.N; j++ {
-// 		for i, test := range vtests {
-// 			vi := v[i]
-// 			for _, test := range test.tests {
-// 				vi.Decode(test.cipher)
-// 			}
-// 		}
-// 	}
-// }
+func BenchmarkDecVigenere(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
+	v := make([]Cipher, len(vtests))
+	for i, test := range vtests {
+		v[i] = NewVigenere(test.key)
+		if v[i] == nil {
+			b.Skip("Benchmark requires valid Vigenere test cases")
+		}
+	}
+	b.ResetTimer()
+	for j := 0; j < b.N; j++ {
+		for i, test := range vtests {
+			vi := v[i]
+			for _, test := range test.tests {
+				vi.Decode(test.cipher)
+			}
+		}
+	}
+}

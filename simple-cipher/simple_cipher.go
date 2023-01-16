@@ -83,11 +83,11 @@ func NewVigenere(key string) Cipher {
 	return nil
 }
 
-func (v vigenere) Encode(input string) string {
+func encoder(input, key, encodeType string) string {
 	input = sanitizeInput(input)
 
 	var w bytes.Buffer
-	shiftLen := len(v.key)
+	shiftLen := len(key)
 	shiftIndex := 0
 
 	for _, letter := range input {
@@ -96,7 +96,12 @@ func (v vigenere) Encode(input string) string {
 		}
 
 		var t rune
-		shift := letter + rune(v.key[shiftIndex]) - a
+		var shift rune
+		if encodeType == "encode" {
+			shift = letter + rune(key[shiftIndex]) - a
+		} else {
+			shift = letter - rune(key[shiftIndex]) + a
+		}
 
 		if shift > z {
 			t = a + shift - z - 1
@@ -112,6 +117,10 @@ func (v vigenere) Encode(input string) string {
 	return w.String()
 }
 
+func (v vigenere) Encode(input string) string {
+	return encoder(input, v.key, "encode")
+}
+
 func (v vigenere) Decode(input string) string {
-	panic("Please implement the Decode function")
+	return encoder(input, v.key, "decode")
 }
