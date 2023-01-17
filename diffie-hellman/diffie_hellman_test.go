@@ -95,92 +95,92 @@ func TestPrivateKey(t *testing.T) {
 }
 
 // test that PublicKey returns known results.
-// func TestPublicKey(t *testing.T) {
-// 	tp := func(a, A, p *big.Int, g int64) {
-// 		if k := PublicKey(a, p, g); k.Cmp(A) != 0 {
-// 			t.Fatalf("PublicKey(%x,\n%x,\n%d)\n= %x,\nwant %x.",
-// 				a, p, g, k, A)
-// 		}
-// 	}
-// 	for _, test := range tests {
-// 		tp(test.a, test.A, test.p, test.g)
-// 		tp(test.b, test.B, test.p, test.g)
-// 	}
-// }
+func TestPublicKey(t *testing.T) {
+	tp := func(a, A, p *big.Int, g int64) {
+		if k := PublicKey(a, p, g); k.Cmp(A) != 0 {
+			t.Fatalf("PublicKey(%x,\n%x,\n%d)\n= %x,\nwant %x.",
+				a, p, g, k, A)
+		}
+	}
+	for _, test := range tests {
+		tp(test.a, test.A, test.p, test.g)
+		tp(test.b, test.B, test.p, test.g)
+	}
+}
 
-// // test that SecretKey returns known results.
-// func TestSecretKeys(t *testing.T) {
-// 	tp := func(a, B, p, s *big.Int) {
-// 		if k := SecretKey(a, B, p); k.Cmp(s) != 0 {
-// 			t.Fatalf("SecretKey(%x,\n%x,\n%x)\n= %x,\nwant %x.",
-// 				a, B, p, k, s)
-// 		}
-// 	}
-// 	for _, test := range tests {
-// 		tp(test.a, test.B, test.p, test.s)
-// 		tp(test.b, test.A, test.p, test.s)
-// 	}
-// }
+// test that SecretKey returns known results.
+func TestSecretKeys(t *testing.T) {
+	tp := func(a, B, p, s *big.Int) {
+		if k := SecretKey(a, B, p); k.Cmp(s) != 0 {
+			t.Fatalf("SecretKey(%x,\n%x,\n%x)\n= %x,\nwant %x.",
+				a, B, p, k, s)
+		}
+	}
+	for _, test := range tests {
+		tp(test.a, test.B, test.p, test.s)
+		tp(test.b, test.A, test.p, test.s)
+	}
+}
 
-// // test that NewPair produces working keys
-// func TestNewPair(t *testing.T) {
-// 	p, g := biggerTest.p, biggerTest.g
-// 	test := func(a, A *big.Int) {
-// 		if a.Cmp(_one) <= 0 || a.Cmp(p) >= 0 {
-// 			t.Fatalf("NewPair(%s, %d) private key = %s, out of range (1, %s)",
-// 				p.String(), g, a.String(), p.String())
-// 		}
-// 		if A.Cmp(_one) <= 0 || A.Cmp(p) >= 0 {
-// 			t.Fatalf("NewPair(%s, %d) public key = %s, out of range (1, %s)",
-// 				p.String(), g, A.String(), p.String())
-// 		}
-// 	}
-// 	a, A := NewPair(p, g)
-// 	test(a, A)
-// 	for i := 0; i < 20; i++ {
-// 		b, B := NewPair(p, g)
-// 		test(b, B)
-// 		sa := SecretKey(a, B, p)
-// 		sb := SecretKey(b, A, p)
-// 		if sa.Cmp(sb) != 0 {
-// 			t.Fatalf("NewPair() produced non-working keys.")
-// 		}
-// 		a, A = b, B
-// 	}
-// }
+// test that NewPair produces working keys
+func TestNewPair(t *testing.T) {
+	p, g := biggerTest.p, biggerTest.g
+	test := func(a, A *big.Int) {
+		if a.Cmp(_one) <= 0 || a.Cmp(p) >= 0 {
+			t.Fatalf("NewPair(%s, %d) private key = %s, out of range (1, %s)",
+				p.String(), g, a.String(), p.String())
+		}
+		if A.Cmp(_one) <= 0 || A.Cmp(p) >= 0 {
+			t.Fatalf("NewPair(%s, %d) public key = %s, out of range (1, %s)",
+				p.String(), g, A.String(), p.String())
+		}
+	}
+	a, A := NewPair(p, g)
+	test(a, A)
+	for i := 0; i < 20; i++ {
+		b, B := NewPair(p, g)
+		test(b, B)
+		sa := SecretKey(a, B, p)
+		sb := SecretKey(b, A, p)
+		if sa.Cmp(sb) != 0 {
+			t.Fatalf("NewPair() produced non-working keys.")
+		}
+		a, A = b, B
+	}
+}
 
-// func BenchmarkPrivateKey(b *testing.B) {
-// 	if testing.Short() {
-// 		b.Skip("skipping benchmark in short mode.")
-// 	}
-// 	for i := 0; i < b.N; i++ {
-// 		PrivateKey(biggerTest.p)
-// 	}
-// }
+func BenchmarkPrivateKey(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
+	for i := 0; i < b.N; i++ {
+		PrivateKey(biggerTest.p)
+	}
+}
 
-// func BenchmarkPublicKey(b *testing.B) {
-// 	if testing.Short() {
-// 		b.Skip("skipping benchmark in short mode.")
-// 	}
-// 	for i := 0; i < b.N; i++ {
-// 		PublicKey(biggerTest.a, biggerTest.p, biggerTest.g)
-// 	}
-// }
+func BenchmarkPublicKey(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
+	for i := 0; i < b.N; i++ {
+		PublicKey(biggerTest.a, biggerTest.p, biggerTest.g)
+	}
+}
 
-// func BenchmarkNewPair(b *testing.B) {
-// 	if testing.Short() {
-// 		b.Skip("skipping benchmark in short mode.")
-// 	}
-// 	for i := 0; i < b.N; i++ {
-// 		NewPair(biggerTest.p, biggerTest.g)
-// 	}
-// }
+func BenchmarkNewPair(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
+	for i := 0; i < b.N; i++ {
+		NewPair(biggerTest.p, biggerTest.g)
+	}
+}
 
-// func BenchmarkSecretKey(b *testing.B) {
-// 	if testing.Short() {
-// 		b.Skip("skipping benchmark in short mode.")
-// 	}
-// 	for i := 0; i < b.N; i++ {
-// 		SecretKey(biggerTest.a, biggerTest.B, biggerTest.p)
-// 	}
-// }
+func BenchmarkSecretKey(b *testing.B) {
+	if testing.Short() {
+		b.Skip("skipping benchmark in short mode.")
+	}
+	for i := 0; i < b.N; i++ {
+		SecretKey(biggerTest.a, biggerTest.B, biggerTest.p)
+	}
+}
