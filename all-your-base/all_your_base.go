@@ -2,10 +2,9 @@ package allyourbase
 
 import (
 	"errors"
-	"math"
 )
 
-func ConvertToBase(inputBase int, inputDigits []int, outputBase int) (outPutDigits []int, err error) {
+func ConvertToBase(inputBase int, inputDigits []int, outputBase int) (out []int, err error) {
 	if inputBase < 2 {
 		return nil, errors.New("input base must be >= 2")
 	}
@@ -14,36 +13,27 @@ func ConvertToBase(inputBase int, inputDigits []int, outputBase int) (outPutDigi
 		return nil, errors.New("output base must be >= 2")
 	}
 
-	digitsLen := len(inputDigits)
-	num := 0
+	sum := 0
 
-	for i, digit := range inputDigits {
+	for _, digit := range inputDigits {
 		if digit < 0 || digit >= inputBase {
 			return nil, errors.New("all digits must satisfy 0 <= d < input base")
 		}
 
-		gin := math.Pow(float64(inputBase), float64(digitsLen-1-i))
-
-		// println(digitsLen - 1 - i)
-		sum := digit * int(gin)
-		// fmt.Printf("%d * (%d^%d) = %d\n", digit, inputBase, digitsLen-1-i, sum)
-		num += sum
+		sum = sum*inputBase + digit
 	}
-	println(num)
 
-	// slc := []int{}
-	// for num > 0 {
-	// 	slc = append(slc, num%10)
-	// 	num = num / 10
-	// }
+	if sum == 0 {
+		return []int{0}, nil
+	}
 
-	// for _, n := range slc {
-	// 	println(n)
-	// }
+	for ; sum > 0; sum /= outputBase {
+		out = append(out, sum%outputBase)
+	}
 
-	// for i := digitsLen - 1; i >= 0; i-- {
-	// 	num += inputDigits[i] * (inputBase ^ i)
-	// }
+	for i, j := 0, len(out)-1; i < j; i, j = i+1, j-1 {
+		out[i], out[j] = out[j], out[i]
+	}
 
 	return
 }

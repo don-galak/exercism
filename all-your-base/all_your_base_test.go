@@ -21,3 +21,14 @@ func TestConvertToBase(t *testing.T) {
 		})
 	}
 }
+
+func BenchmarkConvertToBase(b *testing.B) {
+	if testing.Short() {
+		b.Skip("Skipping benchmark in short mode.")
+	}
+	for i := 0; i < b.N; i++ {
+		for _, tc := range testCases {
+			ConvertToBase(tc.inputBase, tc.inputDigits, tc.outputBase)
+		}
+	}
+}
