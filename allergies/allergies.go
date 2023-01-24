@@ -1,15 +1,6 @@
 package allergies
 
-var allergiesNames = []string{
-	"cats",
-	"pollen",
-	"chocolate",
-	"tomatoes",
-	"strawberries",
-	"shellfish",
-	"peanuts",
-	"eggs",
-}
+var allergiesNames = [8]string{"cats", "pollen", "chocolate", "tomatoes", "strawberries", "shellfish", "peanuts", "eggs"}
 
 const maxAllergies = 256
 
