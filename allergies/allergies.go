@@ -14,26 +14,31 @@ var allergiesNames = []string{
 const maxAllergies = 256
 
 func Allergies(allergies uint) (out []string) {
-	var maxAllergyValue uint = 128
+	var allergyVal uint = 128
 
 	if allergies > maxAllergies {
 		allergies = allergies % maxAllergies
 	}
 
-	i := 0
-
-	for allergies > 0 {
-		if allergies >= maxAllergyValue {
-			allergies -= maxAllergyValue
+	for i := 0; allergies > 0; i++ {
+		if allergies >= allergyVal {
+			allergies -= allergyVal
 			out = append(out, allergiesNames[i])
 		}
-		i++
-		maxAllergyValue /= 2
+		allergyVal /= 2
 	}
 
 	return
 }
 
 func AllergicTo(allergies uint, allergen string) bool {
+	allergens := Allergies(allergies)
+
+	for _, a := range allergens {
+		if allergen == a {
+			return true
+		}
+	}
+
 	return false
 }
