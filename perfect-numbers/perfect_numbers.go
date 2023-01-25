@@ -4,21 +4,21 @@ import (
 	"errors"
 )
 
-type Classification string
+type Classification int
 
 const (
-	ClassificationAbundant  = "ClassificationAbundant"
-	ClassificationDeficient = "ClassificationDeficient"
-	ClassificationPerfect   = "ClassificationPerfect"
+	ClassificationPerfect Classification = iota
+	ClassificationAbundant
+	ClassificationDeficient
 )
 
 var ErrOnlyPositive = errors.New("input is not a positive integer")
 
 func Classify(n int64) (Classification, error) {
 	if n < 1 {
-		return "", ErrOnlyPositive
+		return -1, ErrOnlyPositive
 	}
-	var sum int64 = 0
+	var sum int64
 
 	for i := n - 1; i > 0; i-- {
 		if n%i == 0 {
