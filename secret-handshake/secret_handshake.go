@@ -1,7 +1,5 @@
 package secret
 
-var actions = [4]string{"wink", "double blink", "close your eyes", "jump"}
-
 func Handshake(code uint) (out []string) {
 	reverseTrigger := false
 
@@ -25,6 +23,8 @@ func Handshake(code uint) (out []string) {
 		}
 	}
 
+	// actions are added in the slice, in a reverse facion, so reversing needs to happen
+	// only when it's actually not needed
 	if !reverseTrigger {
 		for i, j := 0, len(out)-1; i < j; i, j = i+1, j-1 {
 			out[i], out[j] = out[j], out[i]
