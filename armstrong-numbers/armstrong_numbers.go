@@ -6,31 +6,22 @@ func IsNumber(n int) bool {
 	if n < 10 {
 		return true
 	}
-
-	numOfDigits := getNumberOfDigits(n)
-	sum := getSum(n, numOfDigits)
-
-	return n == sum
+	return n == getSum(n)
 }
 
-func getNumberOfDigits(n int) (out int) {
+func getSum(n int) (sum int) {
+	digits := getNumberOfDigits(n)
 	for n > 0 {
-		out++
-		if n < 10 {
-			break
-		}
-		n /= 10
-	}
-	return out
-}
-
-func getSum(n, numOfDigits int) (sum int) {
-	for n > 0 {
-		sum += int(math.Pow(float64(n%10), float64(numOfDigits)))
-		if n < 10 {
-			break
-		}
+		sum += int(math.Pow(float64(n%10), float64(digits)))
 		n /= 10
 	}
 	return
+}
+
+func getNumberOfDigits(n int) int {
+	var i int
+	for i = 0; n > 0; i++ {
+		n /= 10
+	}
+	return i
 }
