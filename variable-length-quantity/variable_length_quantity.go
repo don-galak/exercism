@@ -18,7 +18,7 @@ func EncodeVarint(input []uint32) (out []byte) {
 		reverse(extracted)
 		out = append(out, extracted...)
 	}
-	return nil
+	return
 }
 
 func DecodeVarint(input []byte) ([]uint32, error) {
