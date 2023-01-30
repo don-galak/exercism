@@ -21,8 +21,8 @@ const layout = "1/2/2006 15:04:05"
 
 var days = []string{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"}
 
-func Day(wSched WeekSchedule, wDay time.Weekday, month time.Month, year int) int {
-	dada := []int{}
+func Day(wSched WeekSchedule, wDay time.Weekday, month time.Month, year int) (day int) {
+	var count int
 
 	for i := 1; i < 32; i++ {
 		date := fmt.Sprintf("%d/%d/%d 15:04:05", month, i, year)
@@ -30,23 +30,17 @@ func Day(wSched WeekSchedule, wDay time.Weekday, month time.Month, year int) int
 		weekday := d.Weekday().String()
 
 		if weekday == days[wDay] && d.Year() == year {
-			dada = append(dada, i)
+			count++
+
+			if wSched < Last && int(wSched) == count-1 {
+				return i
+			}
+
+			if wSched == Teenth && i > 12 && i < 20 {
+				return i
+			}
+			day = i
 		}
 	}
-
-	if wSched < Last {
-		return dada[wSched]
-	}
-
-	if wSched == Last {
-		return dada[len(dada)-1]
-	}
-
-	var lol int
-	for _, d := range dada {
-		if d > 12 && d < 20 {
-			lol = d
-		}
-	}
-	return lol
+	return
 }
