@@ -21,6 +21,16 @@ var testCases = []struct {
 		expected:    []int{2},
 	},
 	{
+		description: "find first prime",
+		limit:       3,
+		expected:    []int{2, 3},
+	},
+	{
+		description: "find first prime",
+		limit:       5,
+		expected:    []int{2, 3, 5},
+	},
+	{
 		description: "find primes up to 10",
 		limit:       10,
 		expected:    []int{2, 3, 5, 7},

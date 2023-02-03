@@ -1,20 +1,20 @@
 package sieve
 
 func Sieve(n int) []int {
-	marks := make([]bool, n+1)
-
-	primes := make([]int, n/2)
-	k := 0
+	ns := make([]bool, n+1)
+	primes := []int{}
 	for i := 2; i <= n; i++ {
-		if marks[i] {
-			continue
-		}
-		primes[k] = i
-		k++
-
-		for j := i; j <= n; j += i {
-			marks[j] = true
+		marked := ns[i]
+		if !marked {
+			primes = append(primes, i)
+			for j := 1; ; j++ {
+				k := i * j
+				if k > n {
+					break
+				}
+				ns[k] = true
+			}
 		}
 	}
-	return primes[:k]
+	return primes
 }
