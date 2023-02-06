@@ -1,2 +1,2 @@
 # exercism
-solutions for exercism exercises
+Solutions for exercism exercises from [Go on exercism](https://exercism.org/tracks/go).
