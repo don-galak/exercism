@@ -13,27 +13,41 @@ type Entry struct {
 	Change      int // in cents
 }
 
+type entry struct {
+	date        string
+	description string
+	change      string
+}
+
 var errInvalidDate = errors.New("invalid date")
+var localeMap = map[string]entry{
+	"nl-NL": {
+		date:        "Datum",
+		description: "Omschrijving",
+		change:      "Verandering",
+	},
+	"en-US": {
+		date:        "Date",
+		description: "Description",
+		change:      "Change",
+	},
+}
 
 func createHeader(locale string) (header string, err error) {
-	if locale == "nl-NL" {
-		header = "Datum" +
-			strings.Repeat(" ", 10-len("Datum")) +
-			" | " +
-			"Omschrijving" +
-			strings.Repeat(" ", 25-len("Omschrijving")) +
-			" | " + "Verandering" + "\n"
-	} else if locale == "en-US" {
-		header = "Date" +
-			strings.Repeat(" ", 10-len("Date")) +
-			" | " +
-			"Description" +
-			strings.Repeat(" ", 25-len("Description")) +
-			" | " + "Change" + "\n"
-	} else {
+	if entry, ok := localeMap[locale]; !ok {
 		return "", errors.New("invalid locale")
+	} else {
+		desc := entry.description
+		date := entry.date
+		ch := entry.change
+
+		return date +
+			strings.Repeat(" ", 10-len(date)) +
+			" | " +
+			desc +
+			strings.Repeat(" ", 25-len(desc)) +
+			" | " + ch + "\n", nil
 	}
-	return
 }
 
 func FormatLedger(currency string, locale string, entries []Entry) (string, error) {
@@ -124,8 +138,6 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 				row += "€"
 			} else if currency == "USD" {
 				row += "$"
-			} else {
-				return "", errInvalidDate
 			}
 			centsStr := strconv.Itoa(cents)
 			switch len(centsStr) {
