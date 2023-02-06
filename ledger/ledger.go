@@ -2,9 +2,10 @@ package ledger
 
 import (
 	"errors"
+	"fmt"
 	"sort"
-	"strconv"
 	"strings"
+	"time"
 )
 
 type Entry struct {
@@ -50,6 +51,8 @@ func createHeader(locale string) (header string, err error) {
 	}
 }
 
+const layout = "2006-01-02"
+
 func FormatLedger(currency string, locale string, entries []Entry) (string, error) {
 	header, err := createHeader(locale)
 	if err != nil {
@@ -70,13 +73,13 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 		if len(entry.Date) != 10 {
 			return "", errInvalidDate
 		}
-		d1, d2, d3, d4, d5 := entry.Date[:4], entry.Date[4], entry.Date[5:7], entry.Date[7], entry.Date[8:]
-		if d2 != '-' {
+
+		time, err := time.Parse(layout, entry.Date)
+		year, month, date := time.Date()
+		if err != nil {
 			return "", errInvalidDate
 		}
-		if d4 != '-' {
-			return "", errInvalidDate
-		}
+
 		description := entry.Description
 		if len(description) > 25 {
 			description = description[:22] + "..."
@@ -85,9 +88,9 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 		}
 		var d string
 		if locale == "nl-NL" {
-			d = d5 + "-" + d3 + "-" + d1
+			d = fmt.Sprintf("%02d-%02d-%d", date, int(month), year)
 		} else if locale == "en-US" {
-			d = d3 + "/" + d5 + "/" + d1
+			d = fmt.Sprintf("%02d/%02d/%d", int(month), date, year)
 		}
 		negative := false
 		cents := entry.Change
@@ -96,6 +99,7 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 			negative = true
 		}
 		var row string
+		parts, centsStr := getPartsCents(cents)
 		if locale == "nl-NL" {
 			if currency == "EUR" {
 				row += "€"
@@ -103,22 +107,6 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 				row += "$"
 			}
 			row += " "
-			centsStr := strconv.Itoa(cents)
-			switch len(centsStr) {
-			case 1:
-				centsStr = "00" + centsStr
-			case 2:
-				centsStr = "0" + centsStr
-			}
-			rest := centsStr[:len(centsStr)-2]
-			var parts []string
-			for len(rest) > 3 {
-				parts = append(parts, rest[len(rest)-3:])
-				rest = rest[:len(rest)-3]
-			}
-			if len(rest) > 0 {
-				parts = append(parts, rest)
-			}
 			for i := len(parts) - 1; i >= 0; i-- {
 				row += parts[i] + "."
 			}
@@ -139,22 +127,6 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 			} else if currency == "USD" {
 				row += "$"
 			}
-			centsStr := strconv.Itoa(cents)
-			switch len(centsStr) {
-			case 1:
-				centsStr = "00" + centsStr
-			case 2:
-				centsStr = "0" + centsStr
-			}
-			rest := centsStr[:len(centsStr)-2]
-			var parts []string
-			for len(rest) > 3 {
-				parts = append(parts, rest[len(rest)-3:])
-				rest = rest[:len(rest)-3]
-			}
-			if len(rest) > 0 {
-				parts = append(parts, rest)
-			}
 			for i := len(parts) - 1; i >= 0; i-- {
 				row += parts[i] + ","
 			}
@@ -166,9 +138,8 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 			} else {
 				row += " "
 			}
-		} else {
-			return "", errInvalidDate
 		}
+
 		var al int
 		for range row {
 			al++
@@ -177,4 +148,20 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 			strings.Repeat(" ", 13-al) + row + "\n"
 	}
 	return header, nil
+}
+
+func getPartsCents(cents int) ([]string, string) {
+	centsStr := fmt.Sprintf("%03d", cents)
+
+	rest := centsStr[:len(centsStr)-2]
+	var parts []string
+	for len(rest) > 3 {
+		parts = append(parts, rest[len(rest)-3:])
+		rest = rest[:len(rest)-3]
+	}
+	if len(rest) > 0 {
+		parts = append(parts, rest)
+	}
+
+	return parts, centsStr
 }
