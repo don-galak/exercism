@@ -2,6 +2,7 @@ package ledger
 
 import (
 	"errors"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -28,10 +29,12 @@ type Entry struct {
 // 	"EUR": "",
 // }
 
-// var locales = map[string]string{
-// 	"en-US": "",
-// 	"nl-NL": "",
-// }
+//	var locales = map[string]string{
+//		"en-US": "",
+//		"nl-NL": "",
+//	}
+// const nlLayout = "02-01-2006"
+// const usLayout = "01/02/2006"
 
 func createHeader(locale string) (header string, err error) {
 	if locale == "nl-NL" {
@@ -68,25 +71,10 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 			return "", err
 		}
 	}
-	m1 := map[bool]int{true: 0, false: 1}
-	m2 := map[bool]int{true: -1, false: 1}
-	es := entriesCopy
-	for len(es) > 1 {
-		first, rest := es[0], es[1:]
-		success := false
-		for !success {
-			success = true
-			for i, e := range rest {
-				if (m1[e.Date == first.Date]*m2[e.Date < first.Date]*4 +
-					m1[e.Description == first.Description]*m2[e.Description < first.Description]*2 +
-					m1[e.Change == first.Change]*m2[e.Change < first.Change]*1) < 0 {
-					es[0], es[i+1] = es[i+1], es[0]
-					success = false
-				}
-			}
-		}
-		es = es[1:]
-	}
+
+	sort.SliceStable(entriesCopy, func(i, j int) bool {
+		return entriesCopy[i].Change < entriesCopy[j].Change
+	})
 
 	// Parallelism, always a great idea
 	co := make(chan struct {
@@ -133,15 +121,15 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 			negative := false
 			cents := entry.Change
 			if cents < 0 {
-				cents = cents * -1
+				cents *= -1
 				negative = true
 			}
-			var a string
+			var row string
 			if locale == "nl-NL" {
 				if currency == "EUR" {
-					a += "€"
+					row += "€"
 				} else if currency == "USD" {
-					a += "$"
+					row += "$"
 				} else {
 					co <- struct {
 						i int
@@ -149,7 +137,7 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 						e error
 					}{e: errors.New("")}
 				}
-				a += " "
+				row += " "
 				centsStr := strconv.Itoa(cents)
 				switch len(centsStr) {
 				case 1:
@@ -167,24 +155,24 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 					parts = append(parts, rest)
 				}
 				for i := len(parts) - 1; i >= 0; i-- {
-					a += parts[i] + "."
+					row += parts[i] + "."
 				}
-				a = a[:len(a)-1]
-				a += ","
-				a += centsStr[len(centsStr)-2:]
+				row = row[:len(row)-1]
+				row += ","
+				row += centsStr[len(centsStr)-2:]
 				if negative {
-					a += "-"
+					row += "-"
 				} else {
-					a += " "
+					row += " "
 				}
 			} else if locale == "en-US" {
 				if negative {
-					a += "("
+					row += "("
 				}
 				if currency == "EUR" {
-					a += "€"
+					row += "€"
 				} else if currency == "USD" {
-					a += "$"
+					row += "$"
 				} else {
 					co <- struct {
 						i int
@@ -209,15 +197,15 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 					parts = append(parts, rest)
 				}
 				for i := len(parts) - 1; i >= 0; i-- {
-					a += parts[i] + ","
+					row += parts[i] + ","
 				}
-				a = a[:len(a)-1]
-				a += "."
-				a += centsStr[len(centsStr)-2:]
+				row = row[:len(row)-1]
+				row += "."
+				row += centsStr[len(centsStr)-2:]
 				if negative {
-					a += ")"
+					row += ")"
 				} else {
-					a += " "
+					row += " "
 				}
 			} else {
 				co <- struct {
@@ -227,7 +215,7 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 				}{e: errors.New("")}
 			}
 			var al int
-			for range a {
+			for range row {
 				al++
 			}
 			co <- struct {
@@ -235,7 +223,7 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 				s string
 				e error
 			}{i: i, s: d + strings.Repeat(" ", 10-len(d)) + " | " + de + " | " +
-				strings.Repeat(" ", 13-al) + a + "\n"}
+				strings.Repeat(" ", 13-al) + row + "\n"}
 		}(i, et)
 	}
 	ss := make([]string, len(entriesCopy))
