@@ -12,11 +12,57 @@ type Entry struct {
 	Change      int // in cents
 }
 
-func FormatLedger(currency string, locale string, entries []Entry) (string, error) {
-	var entriesCopy []Entry
-	for _, e := range entries {
-		entriesCopy = append(entriesCopy, e)
+// type LocalInput struct {
+// 	currency string
+// 	locale string
+// }
+
+// var localInput = map[string]string{}
+
+// func isCorrectInput(currency , locale string) bool {
+
+// }
+
+// var currencies = map[string]string{
+// 	"USD": "",
+// 	"EUR": "",
+// }
+
+// var locales = map[string]string{
+// 	"en-US": "",
+// 	"nl-NL": "",
+// }
+
+func createHeader(locale string) (header string, err error) {
+	if locale == "nl-NL" {
+		header = "Datum" +
+			strings.Repeat(" ", 10-len("Datum")) +
+			" | " +
+			"Omschrijving" +
+			strings.Repeat(" ", 25-len("Omschrijving")) +
+			" | " + "Verandering" + "\n"
+	} else if locale == "en-US" {
+		header = "Date" +
+			strings.Repeat(" ", 10-len("Date")) +
+			" | " +
+			"Description" +
+			strings.Repeat(" ", 25-len("Description")) +
+			" | " + "Change" + "\n"
+	} else {
+		return "", errors.New("invalid locale")
 	}
+	return
+}
+
+func FormatLedger(currency string, locale string, entries []Entry) (string, error) {
+	header, err := createHeader(locale)
+	if err != nil {
+		return "", err
+	}
+
+	var entriesCopy []Entry
+	entriesCopy = append(entriesCopy, entries...)
+
 	if len(entries) == 0 {
 		if _, err := FormatLedger(currency, "en-US", []Entry{{Date: "2014-01-01", Description: "", Change: 0}}); err != nil {
 			return "", err
@@ -42,24 +88,6 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 		es = es[1:]
 	}
 
-	var s string
-	if locale == "nl-NL" {
-		s = "Datum" +
-			strings.Repeat(" ", 10-len("Datum")) +
-			" | " +
-			"Omschrijving" +
-			strings.Repeat(" ", 25-len("Omschrijving")) +
-			" | " + "Verandering" + "\n"
-	} else if locale == "en-US" {
-		s = "Date" +
-			strings.Repeat(" ", 10-len("Date")) +
-			" | " +
-			"Description" +
-			strings.Repeat(" ", 25-len("Description")) +
-			" | " + "Change" + "\n"
-	} else {
-		return "", errors.New("")
-	}
 	// Parallelism, always a great idea
 	co := make(chan struct {
 		i int
@@ -219,7 +247,7 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 		ss[v.i] = v.s
 	}
 	for i := 0; i < len(entriesCopy); i++ {
-		s += ss[i]
+		header += ss[i]
 	}
-	return s, nil
+	return header, nil
 }
