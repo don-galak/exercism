@@ -14,13 +14,16 @@ type Entry struct {
 	Change      int // in cents
 }
 
+var errInvalidDate = errors.New("invalid date")
+var errInvalidLocale = errors.New("invalid locale")
+var errInvalidCurrency = errors.New("invalid currency")
+
 type entry struct {
 	date        string
 	description string
 	change      string
 }
 
-var errInvalidDate = errors.New("invalid date")
 var localeMap = map[string]entry{
 	"nl-NL": {
 		date:        "Datum",
@@ -36,7 +39,7 @@ var localeMap = map[string]entry{
 
 func createHeader(locale string) (header string, err error) {
 	if entry, ok := localeMap[locale]; !ok {
-		return "", errors.New("invalid locale")
+		return "", errInvalidLocale
 	} else {
 		desc := entry.description
 		date := entry.date
@@ -52,6 +55,8 @@ func createHeader(locale string) (header string, err error) {
 }
 
 const layout = "2006-01-02"
+const nlLayout = "02-01-2006"
+const usLayout = "01/02/2006"
 
 func FormatLedger(currency string, locale string, entries []Entry) (string, error) {
 	header, err := createHeader(locale)
@@ -59,7 +64,7 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 		return "", err
 	}
 	if !(currency == "USD" || currency == "EUR") {
-		return "", errors.New("invalid currency")
+		return "", errInvalidCurrency
 	}
 
 	var entriesCopy []Entry
@@ -75,22 +80,16 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 		}
 
 		time, err := time.Parse(layout, entry.Date)
-		year, month, date := time.Date()
 		if err != nil {
 			return "", errInvalidDate
 		}
+		var date = formatDateBasedOnLocale(time, locale)
 
 		description := entry.Description
 		if len(description) > 25 {
 			description = description[:22] + "..."
 		} else {
 			description = description + strings.Repeat(" ", 25-len(description))
-		}
-		var d string
-		if locale == "nl-NL" {
-			d = fmt.Sprintf("%02d-%02d-%d", date, int(month), year)
-		} else if locale == "en-US" {
-			d = fmt.Sprintf("%02d/%02d/%d", int(month), date, year)
 		}
 		negative := false
 		cents := entry.Change
@@ -144,10 +143,21 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 		for range row {
 			al++
 		}
-		header += d + strings.Repeat(" ", 10-len(d)) + " | " + description + " | " +
+		header += date + strings.Repeat(" ", 10-len(date)) + " | " + description + " | " +
 			strings.Repeat(" ", 13-al) + row + "\n"
 	}
 	return header, nil
+}
+
+func formatDateBasedOnLocale(time time.Time, locale string) string {
+	switch locale {
+	case "nl-NL":
+		return time.Format(nlLayout)
+	case "en-US":
+		return time.Format(usLayout)
+	default:
+		return ""
+	}
 }
 
 func getPartsCents(cents int) ([]string, string) {
