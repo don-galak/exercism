@@ -19,40 +19,21 @@ var errInvalidDate = errors.New("invalid date")
 var errInvalidLocale = errors.New("invalid locale")
 var errInvalidCurrency = errors.New("invalid currency")
 
-type entry struct {
-	date        string
-	description string
-	change      string
+var headerMap = map[string]string{
+	"nl-NL": "Datum      | Omschrijving              | Verandering\n",
+	"en-US": "Date       | Description               | Change\n",
 }
 
-var localeMap = map[string]entry{
-	"nl-NL": {
-		date:        "Datum",
-		description: "Omschrijving",
-		change:      "Verandering",
-	},
-	"en-US": {
-		date:        "Date",
-		description: "Description",
-		change:      "Change",
-	},
+var currencyMap = map[string]string{
+	"EUR": "€",
+	"USD": "$",
 }
 
-func createHeader(locale string) (header string, err error) {
-	if entry, ok := localeMap[locale]; !ok {
+func createHeader(locale string) (string, error) {
+	if _, ok := headerMap[locale]; !ok {
 		return "", errInvalidLocale
-	} else {
-		desc := entry.description
-		date := entry.date
-		ch := entry.change
-
-		return date +
-			strings.Repeat(" ", 10-len(date)) +
-			" | " +
-			desc +
-			strings.Repeat(" ", 25-len(desc)) +
-			" | " + ch + "\n", nil
 	}
+	return headerMap[locale], nil
 }
 
 const layout = "2006-01-02"
@@ -100,13 +81,12 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 		}
 		var change bytes.Buffer
 		parts, centsStr := getPartsCents(cents)
+
 		if locale == "nl-NL" {
-			if currency == "EUR" {
-				change.WriteString("€")
-			} else if currency == "USD" {
-				change.WriteString("$")
-			}
+			change.WriteString(currencyMap[currency])
+
 			change.WriteString(" ")
+
 			for i := len(parts) - 1; i >= 0; i-- {
 				change.WriteString(parts[i] + ".")
 			}
@@ -119,14 +99,8 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 				change.WriteString(" ")
 			}
 		} else if locale == "en-US" {
-			if negative {
-				change.WriteString("(")
-			}
-			if currency == "EUR" {
-				change.WriteString("€")
-			} else if currency == "USD" {
-				change.WriteString("$")
-			}
+			change.WriteString(currencyMap[currency])
+
 			for i := len(parts) - 1; i >= 0; i-- {
 				change.WriteString(parts[i] + ",")
 			}
@@ -134,7 +108,9 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 			change.WriteString(".")
 			change.WriteString(centsStr[len(centsStr)-2:])
 			if negative {
-				change.WriteString(")")
+				c := change.String()
+				change.Reset()
+				change.WriteString("(" + c + ")")
 			} else {
 				change.WriteString(" ")
 			}
