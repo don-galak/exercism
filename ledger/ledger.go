@@ -1,6 +1,7 @@
 package ledger
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"sort"
@@ -97,54 +98,57 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 			cents *= -1
 			negative = true
 		}
-		var row string
+		var change bytes.Buffer
 		parts, centsStr := getPartsCents(cents)
 		if locale == "nl-NL" {
 			if currency == "EUR" {
-				row += "€"
+				change.WriteString("€")
 			} else if currency == "USD" {
-				row += "$"
+				change.WriteString("$")
 			}
-			row += " "
+			change.WriteString(" ")
 			for i := len(parts) - 1; i >= 0; i-- {
-				row += parts[i] + "."
+				change.WriteString(parts[i] + ".")
 			}
-			row = row[:len(row)-1]
-			row += ","
-			row += centsStr[len(centsStr)-2:]
+			change.Truncate(change.Len() - 1)
+			change.WriteString(",")
+			change.WriteString(centsStr[len(centsStr)-2:])
 			if negative {
-				row += "-"
+				change.WriteString("-")
 			} else {
-				row += " "
+				change.WriteString(" ")
 			}
 		} else if locale == "en-US" {
 			if negative {
-				row += "("
+				change.WriteString("(")
 			}
 			if currency == "EUR" {
-				row += "€"
+				change.WriteString("€")
 			} else if currency == "USD" {
-				row += "$"
+				change.WriteString("$")
 			}
 			for i := len(parts) - 1; i >= 0; i-- {
-				row += parts[i] + ","
+				change.WriteString(parts[i] + ",")
 			}
-			row = row[:len(row)-1]
-			row += "."
-			row += centsStr[len(centsStr)-2:]
+			change.Truncate(change.Len() - 1)
+			change.WriteString(".")
+			change.WriteString(centsStr[len(centsStr)-2:])
 			if negative {
-				row += ")"
+				change.WriteString(")")
 			} else {
-				row += " "
+				change.WriteString(" ")
 			}
 		}
 
-		var al int
-		for range row {
-			al++
+		spaces := 0
+		for range change.String() {
+			spaces++
 		}
+		spaces = 13 - spaces
+		// panic(fmt.Sprint("\nrowLEN: ", change.Len(), "\nAL: ", spaces))
+
 		header += date + strings.Repeat(" ", 10-len(date)) + " | " + description + " | " +
-			strings.Repeat(" ", 13-al) + row + "\n"
+			strings.Repeat(" ", spaces) + change.String() + "\n"
 	}
 	return header, nil
 }
