@@ -1,11 +1,9 @@
 package linkedlist
 
-import "errors"
-
 type Node struct {
-	next     *Node
-	previous *Node
-	Value    interface{}
+	next  *Node
+	prev  *Node
+	Value interface{}
 }
 
 type List struct {
@@ -14,7 +12,7 @@ type List struct {
 }
 
 func NewList(args ...interface{}) *List {
-	var list *List
+	list := &List{}
 	for _, v := range args {
 		list.Push(v)
 	}
@@ -26,62 +24,71 @@ func (n *Node) Next() *Node {
 }
 
 func (n *Node) Prev() *Node {
-	return n.previous
+	return n.prev
 }
 
 func (l *List) Unshift(v interface{}) {
-	newNode := &Node{Value: v, previous: nil}
+	newNode := &Node{Value: v}
 	if l.first == nil {
 		l.first = newNode
-		l.last = newNode
-		newNode.next = nil
+		l.last = l.first
 	} else {
 		newNode.next = l.first
 		l.first = newNode
-		newNode.next.previous = newNode
+		newNode.next.prev = newNode
 	}
 }
 
 func (l *List) Push(v interface{}) {
+	newNode := &Node{Value: v}
 	if l.last == nil {
-		l.Unshift(v)
+		l.first = newNode
+		l.last = l.first
+	} else {
+		l.last.next = newNode
+		newNode.prev = l.last
+		l.last = newNode
+	}
+}
+
+func (l *List) Shift() (val interface{}, err error) {
+	if l.first != nil && l.first == l.last {
+		val = l.first.Value
+		l.first = nil
+		l.last = nil
 		return
 	}
-	l.last.next = &Node{Value: v, previous: l.last, next: nil}
-	l.last = l.last.next
-}
-
-func (l *List) Shift() (interface{}, error) {
-	if l.first == nil {
-		return nil, errors.New("")
-	}
-	shiftedVal := l.first.Value
+	val = l.first.Value
 	l.first = l.first.next
-	l.first.previous = nil
-	return shiftedVal, nil
+	l.first.prev = nil
+	return
 }
 
-func (l *List) Pop() (interface{}, error) {
-	if l.last == nil {
-		return nil, errors.New("")
+func (l *List) Pop() (val interface{}, err error) {
+	if l.last != nil && l.first == l.last {
+		val = l.last.Value
+		l.first = nil
+		l.last = nil
+		return
 	}
-	poppedVal := l.last.Value
-	l.last = l.last.previous
+	val = l.last.Value
+	l.last = l.last.prev
 	l.last.next = nil
-	return poppedVal, nil
-}
-
-func recur(node *Node) *Node {
-	node.next = node.previous
-	node.next.previous = node.next
-	if node.previous == nil {
-		return node
-	}
-	return recur(node.previous)
+	return
 }
 
 func (l *List) Reverse() {
-	recur(l.last)
+	if l.first != nil && l.first != l.last {
+		node := l.first
+		for node != nil && node != l.last {
+			value, _ := l.Shift()
+			l.Push(value)
+			node = node.Next()
+		}
+		last := l.last
+		l.last = l.first
+		l.first = last
+	}
 }
 
 func (l *List) First() *Node {
