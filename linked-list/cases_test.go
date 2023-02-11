@@ -34,26 +34,26 @@ var reverseTestCases = []struct {
 	in       []interface{}
 	expected []interface{}
 }{
-	// {
-	// 	name:     "from 5 elements",
-	// 	in:       []interface{}{1, 2, 3, 4, 5},
-	// 	expected: []interface{}{5, 4, 3, 2, 1},
-	// },
-	// {
-	// 	name:     "from 2 elements",
-	// 	in:       []interface{}{1, 2},
-	// 	expected: []interface{}{2, 1},
-	// },
-	// {
-	// 	name:     "from no element",
-	// 	in:       []interface{}{},
-	// 	expected: []interface{}{},
-	// },
-	// {
-	// 	name:     "from 1 element",
-	// 	in:       []interface{}{999},
-	// 	expected: []interface{}{999},
-	// },
+	{
+		name:     "from 5 elements",
+		in:       []interface{}{1, 2, 3, 4, 5},
+		expected: []interface{}{5, 4, 3, 2, 1},
+	},
+	{
+		name:     "from 2 elements",
+		in:       []interface{}{1, 2},
+		expected: []interface{}{2, 1},
+	},
+	{
+		name:     "from no element",
+		in:       []interface{}{},
+		expected: []interface{}{},
+	},
+	{
+		name:     "from 1 element",
+		in:       []interface{}{999},
+		expected: []interface{}{999},
+	},
 }
 
 var pushPopTestCases = []struct {

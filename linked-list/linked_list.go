@@ -7,8 +7,8 @@ type Node struct {
 }
 
 type List struct {
-	first *Node
-	last  *Node
+	head *Node
+	tail *Node
 }
 
 func NewList(args ...interface{}) *List {
@@ -29,72 +29,67 @@ func (n *Node) Prev() *Node {
 
 func (l *List) Unshift(v interface{}) {
 	newNode := &Node{Value: v}
-	if l.first == nil {
-		l.first = newNode
-		l.last = l.first
+	if l.head == nil {
+		l.head = newNode
+		l.tail = l.head
 	} else {
-		newNode.next = l.first
-		l.first = newNode
+		newNode.next = l.head
+		l.head = newNode
 		newNode.next.prev = newNode
 	}
 }
 
 func (l *List) Push(v interface{}) {
 	newNode := &Node{Value: v}
-	if l.last == nil {
-		l.first = newNode
-		l.last = l.first
+	if l.tail == nil {
+		l.head = newNode
+		l.tail = l.head
 	} else {
-		l.last.next = newNode
-		newNode.prev = l.last
-		l.last = newNode
+		l.tail.next = newNode
+		newNode.prev = l.tail
+		l.tail = newNode
 	}
 }
 
 func (l *List) Shift() (val interface{}, err error) {
-	if l.first != nil && l.first == l.last {
-		val = l.first.Value
-		l.first = nil
-		l.last = nil
+	if l.head != nil && l.head == l.tail {
+		val = l.head.Value
+		l.head = nil
+		l.tail = nil
 		return
 	}
-	val = l.first.Value
-	l.first = l.first.next
-	l.first.prev = nil
+	val = l.head.Value
+	l.head = l.head.next
+	l.head.prev = nil
 	return
 }
 
 func (l *List) Pop() (val interface{}, err error) {
-	if l.last != nil && l.first == l.last {
-		val = l.last.Value
-		l.first = nil
-		l.last = nil
+	if l.tail != nil && l.head == l.tail {
+		val = l.tail.Value
+		l.head = nil
+		l.tail = nil
 		return
 	}
-	val = l.last.Value
-	l.last = l.last.prev
-	l.last.next = nil
+	val = l.tail.Value
+	l.tail = l.tail.prev
+	l.tail.next = nil
 	return
 }
 
 func (l *List) Reverse() {
-	if l.first != nil && l.first != l.last {
-		node := l.first
-		for node != nil && node != l.last {
-			value, _ := l.Shift()
-			l.Push(value)
-			node = node.Next()
-		}
-		last := l.last
-		l.last = l.first
-		l.first = last
+	node := l.head
+	for node != nil {
+		node.next, node.prev = node.prev, node.next
+		node = node.prev
 	}
+	l.head, l.tail = l.tail, l.head
 }
 
 func (l *List) First() *Node {
-	return l.first
+	return l.head
 }
 
 func (l *List) Last() *Node {
-	return l.last
+	return l.tail
 }
