@@ -37,10 +37,21 @@ func (bst *BinarySearchTree) Insert(i int) {
 	}
 }
 
+func sortTree(node *BinarySearchTree, s *[]int) {
+	if node != nil {
+		sortTree(node.left, s)
+		*s = append(*s, node.data)
+		sortTree(node.right, s)
+	}
+}
+
 // SortedData returns the ordered contents of BinarySearchTree as an []int.
 // The values are in increasing order starting with the lowest int value.
 // A BinarySearchTree that has the numbers [1,3,7,5] added will return the
 // []int [1,3,5,7].
 func (bst *BinarySearchTree) SortedData() []int {
-	return []int{}
+	s := []int{}
+	sortTree(bst, &s)
+
+	return s
 }
