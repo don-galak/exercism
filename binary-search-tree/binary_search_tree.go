@@ -16,24 +16,22 @@ func NewBst(i int) *BinarySearchTree {
 func (bst *BinarySearchTree) Insert(i int) {
 
 	node := bst
-	added := false
+	newNode := NewBst(i)
 
-	for !added {
+	for {
 		if i <= node.data {
 			if node.left != nil {
 				node = node.left
 			} else {
-				node.left = NewBst(i)
-				added = true
+				node.left = newNode
+				break
 			}
-		}
-
-		if i > node.data {
+		} else {
 			if node.right != nil {
 				node = node.right
 			} else {
-				node.right = NewBst(i)
-				added = true
+				node.right = newNode
+				break
 			}
 		}
 	}
