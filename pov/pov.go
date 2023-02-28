@@ -9,7 +9,11 @@ type Tree struct {
 
 // New creates and returns a new Tree with the given root value and children.
 func New(value string, children ...*Tree) *Tree {
-	return &Tree{value: value, children: children}
+	root := &Tree{value: value, children: children}
+	for _, ch := range children {
+		ch.parent = root
+	}
+	return root
 }
 
 // Value returns the value at the root of a tree.
@@ -42,10 +46,37 @@ func (tr *Tree) String() string {
 }
 
 // POV problem-specific functions
+func rec(root *Tree, from string) *Tree {
+	if root.value == from {
+		return root
+	}
+	for _, ch := range root.children {
+		return rec(ch, from)
+	}
+	return nil
+}
 
 // FromPov returns the pov from the node specified in the argument.
 func (tr *Tree) FromPov(from string) *Tree {
-	panic("Please implement this function")
+	root := rec(tr, from)
+	if root == nil {
+		return nil
+	}
+	parent := root.parent
+	var index int
+	for i, ch := range parent.children {
+		println(ch.value)
+		if ch.value == from {
+			index = i
+			break
+		}
+	}
+	parent.children[index] = parent.children[len(parent.children)-1]
+	parent.children = parent.children[:len(parent.children)-1]
+	root.parent = nil
+	root.children = append(root.children, parent)
+
+	return root
 }
 
 // PathTo returns the shortest path between two nodes in the tree.
