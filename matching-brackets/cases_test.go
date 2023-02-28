@@ -57,11 +57,11 @@ var testCases = []bracketTest{
 		input:       "{}[]",
 		expected:    true,
 	},
-	// {
-	// 	description: "paired and nested brackets",
-	// 	input:       "([{}({}[])])",
-	// 	expected:    true,
-	// },
+	{
+		description: "paired and nested brackets",
+		input:       "([{}({}[])])",
+		expected:    true,
+	},
 	{
 		description: "unopened closing brackets",
 		input:       "{[)][]}",
@@ -72,11 +72,11 @@ var testCases = []bracketTest{
 		input:       "([{])",
 		expected:    false,
 	},
-	// {
-	// 	description: "paired and wrong nested brackets",
-	// 	input:       "[({]})",
-	// 	expected:    false,
-	// },
+	{
+		description: "paired and wrong nested brackets",
+		input:       "[({]})",
+		expected:    false,
+	},
 	{
 		description: "paired and incomplete brackets",
 		input:       "{}[",
@@ -97,11 +97,11 @@ var testCases = []bracketTest{
 		input:       "{)()",
 		expected:    false,
 	},
-	// {
-	// 	description: "math expression",
-	// 	input:       "(((185 + 223.85) * 15) - 543)/2",
-	// 	expected:    true,
-	// },
+	{
+		description: "math expression",
+		input:       "(((185 + 223.85) * 15) - 543)/2",
+		expected:    true,
+	},
 	{
 		description: "complex latex expression",
 		input:       "\\left(\\begin{array}{cc} \\frac{1}{3} & x\\\\ \\mathrm{e}^{x} &... x^2 \\end{array}\\right)",

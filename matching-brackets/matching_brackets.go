@@ -1,41 +1,19 @@
 package brackets
 
-func Bracket(input string) bool {
-	startingSquare := false
-	startingBracket := false
-	startingParenthese := false
-	// endingSquare := false
-	// endingBracket := false
-	// endingParenthese := false
+var bMap = map[rune]rune{')': '(', '}': '{', ']': '['}
 
-	for _, c := range input {
-		switch c {
-		case '[':
-			startingSquare = true
-		case ']':
-			if !startingSquare {
+func Bracket(s string) bool {
+	var stack []rune
+	for _, b := range s {
+		switch b {
+		case '[', '{', '(':
+			stack = append(stack, b)
+		case ']', '}', ')':
+			if len(stack) == 0 || stack[len(stack)-1] != bMap[b] {
 				return false
 			}
-			startingSquare = false
-		case '{':
-			startingBracket = true
-		case '}':
-			if !startingBracket {
-				return false
-			}
-			startingBracket = false
-		case '(':
-			startingParenthese = true
-		case ')':
-			if !startingParenthese {
-				return false
-			}
-			startingParenthese = false
+			stack = stack[:len(stack)-1]
 		}
 	}
-	if startingBracket || startingSquare || startingParenthese {
-		return false
-	}
-
-	return true
+	return len(stack) == 0
 }
