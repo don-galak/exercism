@@ -9,10 +9,11 @@ func Bracket(s string) bool {
 		case '[', '{', '(':
 			stack = append(stack, b)
 		case ']', '}', ')':
-			if len(stack) == 0 || stack[len(stack)-1] != bMap[b] {
+			n := len(stack) - 1
+			if n < 0 || stack[n] != bMap[b] {
 				return false
 			}
-			stack = stack[:len(stack)-1]
+			stack = stack[:n]
 		}
 	}
 	return len(stack) == 0
