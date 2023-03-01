@@ -103,31 +103,30 @@ func TestChildren(t *testing.T) {
 }
 
 func TestFromPov(t *testing.T) {
-	// t.Skip()
 	tests := []struct {
 		description string
 		tree        *Tree
 		from        string
 		expected    *Tree
 	}{
-		// {
-		// 	description: "Results in the same tree if the input tree is a singleton",
-		// 	tree:        New("x"),
-		// 	from:        "x",
-		// 	expected:    New("x"),
-		// },
+		{
+			description: "Results in the same tree if the input tree is a singleton",
+			tree:        New("x"),
+			from:        "x",
+			expected:    New("x"),
+		},
 		{
 			description: "Can reroot a tree with a parent and one sibling",
 			tree:        New("parent", New("x"), New("sibling")),
 			from:        "x",
 			expected:    New("x", New("parent", New("sibling"))),
 		},
-		// {
-		// 	description: "Can reroot a tree with a parent and many siblings",
-		// 	tree:        New("parent", New("a"), New("x"), New("b"), New("c")),
-		// 	from:        "x",
-		// 	expected:    New("x", New("parent", New("a"), New("b"), New("c"))),
-		// },
+		{
+			description: "Can reroot a tree with a parent and many siblings",
+			tree:        New("parent", New("a"), New("x"), New("b"), New("c")),
+			from:        "x",
+			expected:    New("x", New("parent", New("a"), New("b"), New("c"))),
+		},
 		// {
 		// 	description: "Can reroot a tree with new root deeply nested in tree",
 		// 	tree:        New("level-0", New("level-1", New("level-2", New("level-3", New("x"))))),
@@ -169,7 +168,7 @@ func TestFromPov(t *testing.T) {
 			got := tt.tree.FromPov(tt.from)
 			want := tt.expected
 			if !treeEqual(want, got) {
-				t.Fatalf("expected: %v, got: %v", want, got)
+				t.Fatalf("expected: %v\n             got     : %v", want, got)
 			}
 		})
 	}

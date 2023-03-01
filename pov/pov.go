@@ -46,37 +46,49 @@ func (tr *Tree) String() string {
 }
 
 // POV problem-specific functions
-func rec(root *Tree, from string) *Tree {
-	if root.value == from {
-		return root
+func findNode(node *Tree, from string) *Tree {
+	if node.value == from {
+		return node
 	}
-	for _, ch := range root.children {
-		return rec(ch, from)
+	for _, ch := range node.children {
+		l := findNode(ch, from)
+		if l != nil && l.value == from {
+			return l
+		}
 	}
 	return nil
 }
 
 // FromPov returns the pov from the node specified in the argument.
 func (tr *Tree) FromPov(from string) *Tree {
-	root := rec(tr, from)
-	if root == nil {
+	if tr.value == from {
+		return tr
+	}
+	node := findNode(tr, from)
+	if node == nil {
 		return nil
 	}
-	parent := root.parent
+
+	parent := node.parent
 	var index int
 	for i, ch := range parent.children {
-		println(ch.value)
 		if ch.value == from {
 			index = i
 			break
 		}
 	}
+
 	parent.children[index] = parent.children[len(parent.children)-1]
 	parent.children = parent.children[:len(parent.children)-1]
-	root.parent = nil
-	root.children = append(root.children, parent)
+	if parent.parent != nil {
+		println("PARENT PARENT: ", parent.parent.String())
+		// parent.children = []*Tree{parent.parent}
+	}
+	parent.parent = node
+	node.parent = nil
+	node.children = append(node.children, parent)
 
-	return root
+	return node
 }
 
 // PathTo returns the shortest path between two nodes in the tree.
