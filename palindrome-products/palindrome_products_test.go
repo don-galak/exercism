@@ -60,47 +60,49 @@ var testCases = []testCase{
 }
 
 // Bonus curiosities. Can a negative number be a palindrome? Most say no.
-var bonusData = []testCase{
-	// The following two test cases have the same input, but different expectations. Uncomment just one or the other.
-	// Here you can test that you can reach the limit of the largest palindrome made of two 2-digit numbers.
-	//{
-	//	description: "bonus test 1: error for negative limits",
-	//	fmin:        -99,
-	//	fmax:        -10,
-	//	pmin:        Product{},
-	//	pmax:        Product{},
-	//	errPrefix:   "Negative limits",
-	//},
-	// You can still get non-negative products from negative factors.
-	{
-		description: "bonus test 1: no error for negative limits",
-		fmin:        -99,
-		fmax:        -10,
-		pmin:        Product{121, [][2]int{{-11, -11}}},
-		pmax:        Product{9009, [][2]int{{-99, -91}}},
-		errPrefix:   "",
-	},
-	// The following two test cases have the same input, but different expectations. Uncomment just one or the other.
-	//In case you reverse the *digits* you could have the following cases:
-	//- the zero has to be considered
-	//{
-	//	description: "bonus test 2",
-	//	fmin:        -2,
-	//	fmax:        2,
-	//	pmin:        Product{0, [][2]int{{-2, 0}, {-1, 0}, {0, 0}, {0, 1}, {0, 2}}},
-	//	pmax:        Product{4, [][2]int{{-2, -2}, {2, 2}}},
-	//	errPrefix:   "",
-	//},
-	// - you can keep the minus sign in place
-	{
-		description: "bonus test 2",
-		fmin:        -2,
-		fmax:        2,
-		pmin:        Product{-4, [][2]int{{-2, 2}}},
-		pmax:        Product{4, [][2]int{{-2, -2}, {2, 2}}},
-		errPrefix:   "",
-	},
-}
+// /*
+// var bonusData = []testCase{
+// 	// The following two test cases have the same input, but different expectations. Uncomment just one or the other.
+// 	// Here you can test that you can reach the limit of the largest palindrome made of two 2-digit numbers.
+// 	//{
+// 	//	description: "bonus test 1: error for negative limits",
+// 	//	fmin:        -99,
+// 	//	fmax:        -10,
+// 	//	pmin:        Product{},
+// 	//	pmax:        Product{},
+// 	//	errPrefix:   "Negative limits",
+// 	//},
+// 	// You can still get non-negative products from negative factors.
+// 	{
+// 		description: "bonus test 1: no error for negative limits",
+// 		fmin:        -99,
+// 		fmax:        -10,
+// 		pmin:        Product{121, [][2]int{{-11, -11}}},
+// 		pmax:        Product{9009, [][2]int{{-99, -91}}},
+// 		errPrefix:   "",
+// 	},
+// 	// The following two test cases have the same input, but different expectations. Uncomment just one or the other.
+// 	//In case you reverse the *digits* you could have the following cases:
+// 	//- the zero has to be considered
+// 	//{
+// 	//	description: "bonus test 2",
+// 	//	fmin:        -2,
+// 	//	fmax:        2,
+// 	//	pmin:        Product{0, [][2]int{{-2, 0}, {-1, 0}, {0, 0}, {0, 1}, {0, 2}}},
+// 	//	pmax:        Product{4, [][2]int{{-2, -2}, {2, 2}}},
+// 	//	errPrefix:   "",
+// 	//},
+// 	// - you can keep the minus sign in place
+// 	{
+// 		description: "bonus test 2",
+// 		fmin:        -2,
+// 		fmax:        2,
+// 		pmin:        Product{-4, [][2]int{{-2, 2}}},
+// 		pmax:        Product{4, [][2]int{{-2, -2}, {2, 2}}},
+// 		errPrefix:   "",
+// 	},
+// }
+// */
 
 func TestPalindromeProducts(t *testing.T) {
 	// Uncomment the following line and the bonusData var above to add the bonus test to the default tests

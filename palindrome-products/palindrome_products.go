@@ -19,7 +19,7 @@ func (p Product) pairExists(a, b int) bool {
 	return false
 }
 
-func (p *Product) append() {
+func (p *Product) removeFalsyProducts() {
 	for i, f := range p.Factorizations {
 		if p.value > f[0]*f[1] {
 			p.Factorizations = append(p.Factorizations[:i], p.Factorizations[i+1:]...)
@@ -71,7 +71,7 @@ func Products(fmin, fmax int) (Product, Product, error) {
 			}
 		}
 	}
-	pmax.append()
+	pmax.removeFalsyProducts()
 
 	if pmin.value == 0 && pmax.value == 0 {
 		return pmin, pmax, errNoPalidromes
