@@ -2,7 +2,6 @@ package palindrome
 
 import (
 	"errors"
-	"fmt"
 )
 
 type Product struct {
@@ -30,17 +29,12 @@ func (p *Product) removeFalsyProducts() {
 var errNoPalidromes = errors.New("no palindromes")
 var errFMinGTFmax = errors.New("fmin > fmax")
 
-func isPalindrome(num int) bool {
-	toString := fmt.Sprintf("%d", num)
-	orig := toString
-
-	n := len(toString)
-	runes := make([]rune, n)
-	for _, rune := range toString {
-		n--
-		runes[n] = rune
+func isPalindrome(p int) bool {
+	revp := 0
+	for n := p; n > 0; n /= 10 {
+		revp = revp*10 + n%10
 	}
-	return string(runes[n:]) == orig
+	return p == revp
 }
 
 func Products(fmin, fmax int) (Product, Product, error) {
