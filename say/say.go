@@ -18,7 +18,7 @@ var m = map[int64]string{0: "zero", 1: "one", 2: "two",
 	18: "eighteen", 19: "nineteen",
 	20:       "twenty",
 	30:       "thirty",
-	40:       "fourty",
+	40:       "forty",
 	50:       "fifty",
 	60:       "sixty",
 	70:       "seventy",
@@ -37,38 +37,53 @@ func Say(n int64) (string, bool) {
 		if n >= hundred {
 			return "one " + s, true
 		}
-
 		return s, true
 	}
 
-	// slice := []int{}
-
-	// for n > 0 {
-	// 	println(n, (n/10)*10)
-	// 	n /= 10
-	// }
-
-	// println((billion+123)%billion, 1/1000)
 	var s bytes.Buffer
-
-	println(n)
-
 	for n > 0 {
 		switch {
+		case n > billion:
+			divByHundred := n / billion
+			s.WriteString(m[divByHundred] + " " + m[billion])
+			n %= billion
+		case n > million:
+			divByHundred := n / million
+			s.WriteString(m[divByHundred] + " " + m[million])
+			n %= million
+		case n > thousand:
+			if s.Len() > 0 {
+				s.WriteString(" ")
+			}
+			divByHundred := n / thousand
+			s.WriteString(m[divByHundred] + " " + m[thousand])
+			n %= thousand
 		case n > hundred:
-			s.WriteString(m[(n/100)*100])
+			if s.Len() > 0 {
+				s.WriteString(" ")
+			}
+			divByHundred := n / hundred
+			s.WriteString(m[divByHundred] + " " + m[hundred])
 			n %= hundred
-			s.WriteString("-")
-		case n > ten:
-			s.WriteString(m[(n/10)*10])
+		case n >= ten:
+			if s.Len() > 0 {
+				s.WriteString(" ")
+			}
+			s.WriteString(m[(n/ten)*ten])
 			n %= ten
 			s.WriteString("-")
 		case n < ten:
 			s.WriteString(m[n])
 			n = 0
-
 		}
 	}
 
 	return s.String(), true
 }
+
+// func doThing(s bytes.Buffer, n int64) {
+// 	// orig := n
+// 	for n > 0 {
+
+// 	}
+// }
