@@ -33,28 +33,32 @@ func Say(n int64) (string, bool) {
 	}
 
 	var s bytes.Buffer
-	for n > 0 {
-		switch {
-		case n > billion:
-			doThing(&s, billion, &n)
-		case n > million:
-			doThing(&s, million, &n)
-		case n > thousand:
-			doThing(&s, thousand, &n)
-		case n > hundred:
-			doThing(&s, hundred, &n)
-		case n > ten:
-			doThing(&s, ten, &n, func() { s.WriteString(numMap[(n/ten)*ten]) })
-			s.WriteString("-")
-		case n == ten:
-			doThing(&s, ten, &n, func() { s.WriteString(numMap[(n/ten)*ten]) })
-		case n < ten:
-			s.WriteString(numMap[n])
-			n = 0
-		}
-	}
+	calculateNumberInEnglish(&s, &n)
 
 	return s.String(), true
+}
+
+func calculateNumberInEnglish(s *bytes.Buffer, n *int64) {
+	for *n > 0 {
+		switch {
+		case *n > billion:
+			doThing(s, billion, n)
+		case *n > million:
+			doThing(s, million, n)
+		case *n > thousand:
+			doThing(s, thousand, n)
+		case *n > hundred:
+			doThing(s, hundred, n)
+		case *n > ten:
+			doThing(s, ten, n, func() { s.WriteString(numMap[(*n/ten)*ten]) })
+			s.WriteString("-")
+		case *n == ten:
+			doThing(s, ten, n, func() { s.WriteString(numMap[(*n/ten)*ten]) })
+		case *n < ten:
+			s.WriteString(numMap[*n])
+			*n = 0
+		}
+	}
 }
 
 func doThing(s *bytes.Buffer, k int64, n *int64, cbs ...func()) {
@@ -65,7 +69,15 @@ func doThing(s *bytes.Buffer, k int64, n *int64, cbs ...func()) {
 	if len(cbs) > 0 {
 		cbs[0]()
 	} else {
-		s.WriteString(numMap[divBy] + " " + numMap[k])
+		if num, exists := numMap[divBy]; exists {
+			s.WriteString(num + " " + numMap[k])
+		} else {
+			println(divBy)
+			calculateNumberInEnglish(s, &divBy)
+			s.WriteString(num + " " + numMap[k])
+			println(s.String())
+		}
+
 	}
 	*n %= k
 }
