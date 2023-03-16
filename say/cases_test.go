@@ -90,6 +90,18 @@ var testCases = []struct {
 		expectError: false,
 	},
 	{
+		description: "two thousand two hundred thirty-four",
+		input:       2234,
+		expected:    "two thousand two hundred thirty-four",
+		expectError: false,
+	},
+	{
+		description: "nineteen thousand two hundred thirty-four",
+		input:       19210,
+		expected:    "nineteen thousand two hundred ten",
+		expectError: false,
+	},
+	{
 		description: "one million",
 		input:       1000000,
 		expected:    "one million",
