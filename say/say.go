@@ -1,6 +1,8 @@
 package say
 
-import "bytes"
+import (
+	"strings"
+)
 
 const (
 	ten      = 10
@@ -32,13 +34,13 @@ func Say(n int64) (string, bool) {
 		return s, true
 	}
 
-	var s bytes.Buffer
+	var s strings.Builder
 	calculateNumberInEnglish(&s, &n)
 
 	return s.String(), true
 }
 
-func calculateNumberInEnglish(s *bytes.Buffer, n *int64) {
+func calculateNumberInEnglish(s *strings.Builder, n *int64) {
 	for *n > 0 {
 		switch {
 		case *n > billion:
@@ -61,8 +63,9 @@ func calculateNumberInEnglish(s *bytes.Buffer, n *int64) {
 	}
 }
 
-func doThing(s *bytes.Buffer, k int64, n *int64, cbs ...func()) {
-	if s.Len() > 0 {
+func doThing(s *strings.Builder, k int64, n *int64, cbs ...func()) {
+	// add " " only if last rune is different than " "
+	if s.Len() > 0 && string(s.String()[s.Len()-1]) != " " {
 		s.WriteString(" ")
 	}
 	divBy := *n / k
@@ -72,10 +75,8 @@ func doThing(s *bytes.Buffer, k int64, n *int64, cbs ...func()) {
 		if num, exists := numMap[divBy]; exists {
 			s.WriteString(num + " " + numMap[k])
 		} else {
-			println(divBy)
 			calculateNumberInEnglish(s, &divBy)
-			s.WriteString(num + " " + numMap[k])
-			println(s.String())
+			s.WriteString(" " + numMap[k])
 		}
 
 	}
