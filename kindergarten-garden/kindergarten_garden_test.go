@@ -53,15 +53,15 @@ var tests = []gardenTest{
 		},
 	},
 	test5,
-	test6,
-	// {
-	// 	description: "lookup invalid name",
-	// 	diagram:     "\nRC\nGG",
-	// 	children:    []string{"Alice"},
-	// 	expectError: false,
-	// 	lookups:     []lookup{{child: "Bob", plants: []string{"radishes", "clover", "grass", "grass"}, ok: false}},
-	// },
-	// // failure tests
+	// test6,
+	{
+		description: "lookup invalid name",
+		diagram:     "\nRC\nGG",
+		children:    []string{"Alice"},
+		expectError: false,
+		lookups:     []lookup{{child: "Bob", plants: []string{"radishes", "clover", "grass", "grass"}, ok: false}},
+	},
+	// failure tests
 	{
 		description: "wrong diagram format",
 		diagram:     "RC\nGG",
@@ -83,20 +83,20 @@ var tests = []gardenTest{
 		expectError: true,
 		lookups:     nil,
 	},
-	// {
-	// 	description: "duplicate name",
-	// 	diagram:     "\nRCCC\nGGCC",
-	// 	children:    []string{"Alice", "Alice"},
-	// 	expectError: true,
-	// 	lookups:     nil,
-	// },
-	// {
-	// 	description: "invalid cup codes",
-	// 	diagram:     "\nrc\ngg",
-	// 	children:    []string{"Alice"},
-	// 	expectError: true,
-	// 	lookups:     nil,
-	// },
+	{
+		description: "duplicate name",
+		diagram:     "\nRCCC\nGGCC",
+		children:    []string{"Alice", "Alice"},
+		expectError: true,
+		lookups:     nil,
+	},
+	{
+		description: "invalid cup codes",
+		diagram:     "\nrc\ngg",
+		children:    []string{"Alice"},
+		expectError: true,
+		lookups:     nil,
+	},
 }
 
 var test5 = gardenTest{

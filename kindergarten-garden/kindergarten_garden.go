@@ -2,32 +2,31 @@ package kindergarten
 
 import (
 	"errors"
+	"regexp"
 	"strings"
 )
 
+var errInvalidDiagram = errors.New("invalid diagram")
+var errOddNumberOfCups = errors.New("odd number of cups")
+var errInvalidCupCodes = errors.New("invalid cup codes")
+var errDuplicateChildren = errors.New("duplicate children")
+
 var plantMap = map[string]string{"V": "violets", "R": "radishes", "G": "grass", "C": "clover"}
+var plantReg = regexp.MustCompile(`V|R|G|C`)
 
 type Garden struct {
 	children map[string][]string
 }
 
-// The diagram argument starts each row with a '\n'.  This allows Go's
-// raw string literals to present diagrams in source code nicely as two
-// rows flush left, for example,
-//
-//	diagram := `
-//	VVCCGG
-//	VVCCGG`
-
-var errInvalidDiagram = errors.New("invalid diagram")
-var errOddNumberOfCups = errors.New("odd number of cups")
-
-func getPlants(diagram string) (firstRow string, secondRow string, err error) {
+func getPlantsRows(diagram string) (firstRow string, secondRow string, err error) {
 	plants := strings.Split(diagram, "\n")
-	// first := plants[1]
-	// second := plants[2]
+
 	if len(plants) != 3 || len(plants[1]) != len(plants[2]) {
 		return "", "", errInvalidDiagram
+	}
+
+	if !plantReg.MatchString(plants[1]) || !plantReg.MatchString(plants[2]) {
+		return "", "", errInvalidCupCodes
 	}
 
 	if len(plants[1])%2 != 0 || len(plants[2])%2 != 0 {
@@ -38,17 +37,22 @@ func getPlants(diagram string) (firstRow string, secondRow string, err error) {
 }
 
 func NewGarden(diagram string, children []string) (*Garden, error) {
-	firstRow, secondRow, err := getPlants(diagram)
+	firstRow, secondRow, err := getPlantsRows(diagram)
 	if err != nil {
 		return nil, err
 	}
 
-	println(children[0], firstRow, secondRow)
-
 	G := Garden{children: make(map[string][]string, len(children))}
+	// var ch []string
+	// copy(ch, children)
+	// sort.Strings(ch)
 
 	j := 0
 	for _, child := range children {
+		if _, exists := G.children[child]; exists {
+			return nil, errDuplicateChildren
+		}
+
 		G.children[child] = []string{
 			plantMap[string(firstRow[j])],
 			plantMap[string(firstRow[j+1])],
@@ -62,5 +66,6 @@ func NewGarden(diagram string, children []string) (*Garden, error) {
 }
 
 func (g *Garden) Plants(child string) ([]string, bool) {
-	return g.children[child], true
+	c, exists := g.children[child]
+	return c, exists
 }
