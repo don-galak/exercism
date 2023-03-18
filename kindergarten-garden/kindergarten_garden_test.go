@@ -53,7 +53,7 @@ var tests = []gardenTest{
 		},
 	},
 	test5,
-	// test6,
+	test6,
 	{
 		description: "lookup invalid name",
 		diagram:     "\nRC\nGG",
