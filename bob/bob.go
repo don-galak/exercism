@@ -1,19 +1,18 @@
 package bob
 
 import (
-	"regexp"
 	"strings"
 )
-
-var upperCase = regexp.MustCompile(`^\P{L}*\p{Lu}\P{Ll}*$`)
 
 func Hey(remark string) string {
 	remark = strings.TrimSpace(remark)
 	if len(remark) == 0 {
 		return "Fine. Be that way!"
 	}
-	isQuestion := remark[len(remark)-1] == '?'
-	isUpperCase := upperCase.MatchString(remark)
+	isQuestion := strings.HasSuffix(remark, "?")
+	upperCase := strings.ToUpper(remark)
+	lowerCase := strings.ToLower(remark)
+	isUpperCase := upperCase == remark && lowerCase != remark
 
 	switch {
 	case isQuestion && isUpperCase:
