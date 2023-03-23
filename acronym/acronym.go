@@ -12,14 +12,14 @@ func Abbreviate(s string) string {
 	var b bytes.Buffer
 	b.WriteByte(s[0])
 
-	toAdd := false
+	write := false
 
 	for _, c := range s {
-		if toAdd && c != ' ' {
+		if write && c != ' ' {
 			b.WriteRune(c)
-			toAdd = false
+			write = false
 		} else if c == ' ' {
-			toAdd = true
+			write = true
 		}
 	}
 
