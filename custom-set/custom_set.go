@@ -49,11 +49,11 @@ func (s Set) String() string {
 }
 
 func (s Set) IsEmpty() bool {
-	panic("Please implement the IsEmpty function")
+	return len(s) <= 2
 }
 
 func (s Set) Has(elem string) bool {
-	panic("Please implement the Has function")
+	return strings.Contains(s.String(), fmt.Sprintf(`"%s"`, elem))
 }
 
 func (s Set) Add(elem string) {
@@ -61,7 +61,7 @@ func (s Set) Add(elem string) {
 }
 
 func Subset(s1, s2 Set) bool {
-	panic("Please implement the Subset function")
+	return strings.Contains(s1.String(), s2.String())
 }
 
 func Disjoint(s1, s2 Set) bool {

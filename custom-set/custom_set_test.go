@@ -45,7 +45,6 @@ func TestNewFromSlice(t *testing.T) {
 }
 
 func TestIsEmpty(t *testing.T) {
-	t.Skip()
 	for _, tc := range emptyCases {
 		t.Run(tc.description, func(t *testing.T) {
 			s := NewFromSlice(tc.set)
@@ -58,7 +57,6 @@ func TestIsEmpty(t *testing.T) {
 }
 
 func TestHas(t *testing.T) {
-	t.Skip()
 	for _, tc := range containsCases {
 		t.Run(tc.description, func(t *testing.T) {
 			s := NewFromSlice(tc.set)
