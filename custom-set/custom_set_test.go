@@ -83,7 +83,6 @@ func testBinBool(name string, f func(Set, Set) bool, cases []binBoolCase, t *tes
 }
 
 func TestSubset(t *testing.T) {
-	t.Skip()
 	testBinBool("Subset", Subset, subsetCases, t)
 }
 

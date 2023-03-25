@@ -61,7 +61,9 @@ func (s Set) Add(elem string) {
 }
 
 func Subset(s1, s2 Set) bool {
-	return strings.Contains(s1.String(), s2.String())
+	c := s1.String()[1 : len(s1.String())-1]
+
+	return strings.Contains(s2.String(), c)
 }
 
 func Disjoint(s1, s2 Set) bool {
