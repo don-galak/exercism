@@ -48,6 +48,10 @@ func (s Set) String() string {
 	return string(s)
 }
 
+func (s Set) length() int {
+	return len(s.toSlice())
+}
+
 func (s Set) IsEmpty() bool {
 	return len(s) <= 2
 }
@@ -56,14 +60,24 @@ func (s Set) Has(elem string) bool {
 	return strings.Contains(s.String(), fmt.Sprintf(`"%s"`, elem))
 }
 
-func (s Set) Add(elem string) {
-	panic("Please implement the Add function")
+func (s *Set) Add(elem string) {
+	if !s.Has(elem) {
+		elementToAdd := ""
+		if s.length() > 0 {
+			elementToAdd = fmt.Sprintf(`, "%s"}`, elem)
+		} else {
+			elementToAdd = fmt.Sprintf(`"%s"}`, elem)
+		}
+		*s = Set(strings.Replace(s.String(), "}", elementToAdd, 1))
+	}
+}
+
+func (s Set) removeBraces() string {
+	return s.String()[1 : len(s.String())-1]
 }
 
 func Subset(s1, s2 Set) bool {
-	c := s1.String()[1 : len(s1.String())-1]
-
-	return strings.Contains(s2.String(), c)
+	return strings.Contains(s2.String(), s1.removeBraces())
 }
 
 func (s Set) toSlice() []string {
@@ -91,7 +105,26 @@ func Disjoint(s1, s2 Set) bool {
 }
 
 func Equal(s1, s2 Set) bool {
-	panic("Please implement the Equal function")
+	if s1.length() != s2.length() {
+		return false
+	}
+
+	slice1 := s1.toSlice()
+	slice2 := s2.toSlice()
+
+	for _, i := range slice1 {
+		elementExists := false
+		for _, j := range slice2 {
+			if i == j {
+				elementExists = true
+			}
+		}
+		if !elementExists {
+			return false
+		}
+	}
+
+	return true
 }
 
 func Intersection(s1, s2 Set) Set {

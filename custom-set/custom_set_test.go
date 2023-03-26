@@ -91,12 +91,10 @@ func TestDisjoint(t *testing.T) {
 }
 
 func TestEqual(t *testing.T) {
-	t.Skip()
 	testBinBool("Equal", Equal, equalCases, t)
 }
 
 func TestAdd(t *testing.T) {
-	t.Skip()
 	for _, tc := range addCases {
 		t.Run(tc.description, func(t *testing.T) {
 			s := NewFromSlice(tc.set)
