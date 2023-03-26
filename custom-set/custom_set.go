@@ -128,7 +128,19 @@ func Equal(s1, s2 Set) bool {
 }
 
 func Intersection(s1, s2 Set) Set {
-	panic("Please implement the Intersection function")
+	intersection := []string{}
+
+	slice1 := s1.toSlice()
+	slice2 := s2.toSlice()
+
+	for _, i := range slice1 {
+		for _, j := range slice2 {
+			if i == j {
+				intersection = append(intersection, strings.ReplaceAll(i, `"`, ""))
+			}
+		}
+	}
+	return NewFromSlice(intersection)
 }
 
 func Difference(s1, s2 Set) Set {

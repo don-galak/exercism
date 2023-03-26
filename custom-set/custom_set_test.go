@@ -123,7 +123,6 @@ func testBinOp(name string, f func(Set, Set) Set, cases []binOpCase, t *testing.
 }
 
 func TestIntersection(t *testing.T) {
-	t.Skip()
 	testBinOp("Intersection", Intersection, intersectionCases, t)
 }
 
