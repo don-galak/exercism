@@ -66,8 +66,28 @@ func Subset(s1, s2 Set) bool {
 	return strings.Contains(s2.String(), c)
 }
 
+func (s Set) toSlice() []string {
+	if s.IsEmpty() {
+		return make([]string, 0)
+	}
+
+	sanitizedSet := strings.ReplaceAll(s.String()[1:len(s.String())-1], " ", "")
+	return strings.Split(sanitizedSet, ",")
+}
+
 func Disjoint(s1, s2 Set) bool {
-	panic("Please implement the Disjoint function")
+	slice1 := s1.toSlice()
+	slice2 := s2.toSlice()
+
+	for _, i := range slice1 {
+		for _, j := range slice2 {
+			if i == j {
+				return false
+			}
+		}
+	}
+
+	return true
 }
 
 func Equal(s1, s2 Set) bool {

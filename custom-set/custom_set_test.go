@@ -87,7 +87,6 @@ func TestSubset(t *testing.T) {
 }
 
 func TestDisjoint(t *testing.T) {
-	t.Skip()
 	testBinBool("Disjoint", Disjoint, disjointCases, t)
 }
 
