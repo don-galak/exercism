@@ -127,12 +127,10 @@ func TestIntersection(t *testing.T) {
 }
 
 func TestDifference(t *testing.T) {
-	t.Skip()
 	testBinOp("Difference", Difference, differenceCases, t)
 }
 
 func TestUnion(t *testing.T) {
-	t.Skip()
 	testBinOp("Union", Union, unionCases, t)
 }
 
