@@ -54,7 +54,6 @@ func (l *List) Pop() (v int, e error) {
 		n = n.next
 	}
 	n.next, l.tail = nil, n
-
 	return
 }
 
@@ -76,6 +75,5 @@ func (l *List) Reverse() *List {
 	for i, j := 0, l.size-1; i < j; i, j = i+1, j-1 {
 		r[i], r[j] = r[j], r[i]
 	}
-
 	return New(r)
 }
