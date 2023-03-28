@@ -144,7 +144,6 @@ func TestPushAndPop(t *testing.T) {
 }
 
 func TestReverseEmptyList(t *testing.T) {
-	t.Skip()
 	list := New([]int{})
 	if reversed := list.Reverse().Array(); len(reversed) != 0 {
 		t.Fatalf("Reverse empty list: %v, want empty list", reversed)
@@ -156,7 +155,6 @@ func TestReverseEmptyList(t *testing.T) {
 }
 
 func TestReverseNonEmptyList(t *testing.T) {
-	t.Skip()
 	list := New([]int{1, 2, 3})
 	actual := list.Reverse().Array()
 	expected := []int{3, 2, 1}
