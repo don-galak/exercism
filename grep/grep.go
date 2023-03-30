@@ -10,7 +10,7 @@ import (
 // var flagMap = map[string]bool{"-n": true, "-l": true, "-i":true, "-v":true}
 
 func Search(pattern string, flags, files []string) []string {
-	result := make([]string, 0)
+	resultMap := make(map[string]bool)
 	flagMap := make(map[string]bool, len(flags))
 	for _, f := range flags {
 		flagMap[f] = true
@@ -27,28 +27,35 @@ func Search(pattern string, flags, files []string) []string {
 	for file, fc := range fileContents {
 		for i, line := range strings.Split(fc, "\n") {
 			if flagMap["-i"] {
-				r, _ := regexp.Compile("(?i)" + pattern)
-				if r.MatchString(line) {
-					result = append(result, line)
-				}
+				pattern = "(?i)" + pattern
 			}
 
-			if strings.Contains(line, pattern) {
+			r, _ := regexp.Compile(pattern)
+
+			if r.MatchString(line) {
 				switch {
-				case flagMap["-n"]:
-					line = strconv.Itoa(i+1) + ":" + line
 				case flagMap["-l"]:
 					line = file
-					// case flagMap["-x"]:
-
+				case !flagMap["-l"] && flagMap["-n"]:
+					line = strconv.Itoa(i+1) + ":" + line
+				}
+				if len(files) > 1 && !flagMap["-l"] {
+					line = file + ":" + line
 				}
 
-				result = append(result, line)
+				// ! this wont output the correct result at all times
+				// ! later when we append the keys in a slice, the result might not sorted
+				// ! and some tests will fail
+				resultMap[line] = true
 			}
 		}
 	}
-
+	//
 	// fmt.Printf("files contents: \n%s\n\n", fileContents)
+	result := make([]string, 0)
+	for key := range resultMap {
+		result = append(result, key)
+	}
 
 	return result
 }
