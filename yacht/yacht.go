@@ -1,10 +1,15 @@
 package yacht
 
+var categoryMap = map[string]int{"ones": 1, "twos": 2, "threes": 3, "fours": 4, "fives": 5, "sixes": 6}
+
 func Score(dice []int, category string) int {
+	// key of diceMap is dice and value is occurences of dice
 	diceMap := make(map[int]int)
+	sum := 0
 
 	for _, d := range dice {
 		diceMap[d] = diceMap[d] + 1
+		sum += d
 	}
 
 	switch category {
@@ -30,39 +35,17 @@ func Score(dice []int, category string) int {
 			}
 		}
 	case "little straight":
-		sum := 0
-		for k := range diceMap {
-			sum += k
-		}
-		if sum == 15 {
+		if len(diceMap) == 5 && diceMap[6] == 0 {
 			return 30
 		}
 	case "big straight":
-		sum := 0
-		for k := range diceMap {
-			sum += k
-		}
-		if sum == 20 {
+		if len(diceMap) == 5 && diceMap[1] == 0 {
 			return 30
 		}
 	case "choice":
-		sum := 0
-		for k, v := range diceMap {
-			sum += k * v
-		}
 		return sum
-	case "ones":
-		return diceMap[1] * 1
-	case "twos":
-		return diceMap[2] * 2
-	case "threes":
-		return diceMap[3] * 3
-	case "fours":
-		return diceMap[4] * 4
-	case "fives":
-		return diceMap[5] * 5
-	case "sixes":
-		return diceMap[6] * 6
+	default:
+		return diceMap[categoryMap[category]] * categoryMap[category]
 	}
 
 	return 0
