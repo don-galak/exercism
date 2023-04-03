@@ -16,10 +16,41 @@ func Score(dice []int, category string) int {
 		if len(diceMap) == 2 {
 			result := 0
 			for k, v := range diceMap {
+				if v > 3 {
+					return 0
+				}
 				result += k * v
 			}
 			return result
 		}
+	case "four of a kind":
+		for k, v := range diceMap {
+			if v >= 4 {
+				return k * 4
+			}
+		}
+	case "little straight":
+		sum := 0
+		for k := range diceMap {
+			sum += k
+		}
+		if sum == 15 {
+			return 30
+		}
+	case "big straight":
+		sum := 0
+		for k := range diceMap {
+			sum += k
+		}
+		if sum == 20 {
+			return 30
+		}
+	case "choice":
+		sum := 0
+		for k, v := range diceMap {
+			sum += k * v
+		}
+		return sum
 	case "ones":
 		return diceMap[1] * 1
 	case "twos":
