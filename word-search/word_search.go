@@ -30,3 +30,9 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 
 	return result, err
 }
+
+// make [][]slice of input puzzle
+// range over and find first letter of first word in slice
+// find at which direction lies the next letter
+// right, left, top, bottom, top-right, top-left, bottom-right, bottom-left
+// increment/decrement i,j accirdingly
