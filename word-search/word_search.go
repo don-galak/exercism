@@ -15,18 +15,12 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 		for _, w := range words {
 			first := strings.Index(p, w)
 			if first == -1 {
-				// err = errors.New("")
 				continue
 			}
 			last := first + len(w) - 1
 			result[w] = [2][2]int{{first, i}, {last, i}}
 		}
 	}
-
-	// i := strings.Index("ela mesa", "mesa")
-	// j := i + len("mesa") - 1
-
-	// println(i, j)
 
 	return result, err
 }
@@ -35,4 +29,6 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 // range over and find first letter of first word in slice
 // find at which direction lies the next letter
 // right, left, top, bottom, top-right, top-left, bottom-right, bottom-left
-// increment/decrement i,j accirdingly
+// increment/decrement i,j as steps accordingly
+// repeat until word is complete
+// repeat steps for next word
