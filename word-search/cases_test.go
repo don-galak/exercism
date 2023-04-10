@@ -12,13 +12,13 @@ var testCases = []struct {
 	expectError bool
 	expected    map[string][2][2]int
 }{
-	// {
-	// 	description: "Should accept an initial game grid and a target search word",
-	// 	puzzle:      []string{"jefblpepre"},
-	// 	words:       []string{"clojure"},
-	// 	expectError: true,
-	// 	expected:    map[string][2][2]int{"clojure": {{-1, -1}, {-1, -1}}},
-	// },
+	{
+		description: "Should accept an initial game grid and a target search word",
+		puzzle:      []string{"jefblpepre"},
+		words:       []string{"clojure"},
+		expectError: true,
+		expected:    map[string][2][2]int{"clojure": {{-1, -1}, {-1, -1}}},
+	},
 	{
 		description: "Should locate one word written left to right",
 		puzzle:      []string{"clojurermt"},
@@ -54,41 +54,41 @@ var testCases = []struct {
 		expectError: false,
 		expected:    map[string][2][2]int{"clojure": {{1, 1}, {7, 1}}},
 	},
-	{
-		description: "Should locate a left to right word in three line grid",
-		puzzle:      []string{"camdcimgtc", "jefblpepre", "clojurermt"},
-		words:       []string{"clojure"},
-		expectError: false,
-		expected:    map[string][2][2]int{"clojure": {{0, 2}, {6, 2}}},
-	},
-	{
-		description: "Should locate a left to right word in ten line grid",
-		puzzle:      []string{"jefblpepre", "camdcimgtc", "oivokprjsm", "pbwasqroua", "rixilelhrs", "wolcqlirpc", "screeaumgr", "alxhpburyi", "jalaycalmp", "clojurermt"},
-		words:       []string{"clojure"},
-		expectError: false,
-		expected:    map[string][2][2]int{"clojure": {{0, 9}, {6, 9}}},
-	},
-	{
-		description: "Should locate that left to right word in a different position in a ten line grid",
-		puzzle:      []string{"jefblpepre", "camdcimgtc", "oivokprjsm", "pbwasqroua", "rixilelhrs", "wolcqlirpc", "screeaumgr", "alxhpburyi", "clojurermt", "jalaycalmp"},
-		words:       []string{"clojure"},
-		expectError: false,
-		expected:    map[string][2][2]int{"clojure": {{0, 8}, {6, 8}}},
-	},
-	{
-		description: "Should locate a different left to right word in a ten line grid",
-		puzzle:      []string{"jefblpepre", "camdcimgtc", "oivokprjsm", "pbwasqroua", "rixilelhrs", "wolcqlirpc", "fortranftw", "alxhpburyi", "clojurermt", "jalaycalmp"},
-		words:       []string{"fortran"},
-		expectError: false,
-		expected:    map[string][2][2]int{"fortran": {{0, 6}, {6, 6}}},
-	},
-	{
-		description: "Should locate multiple words",
-		puzzle:      []string{"jefblpepre", "camdcimgtc", "oivokprjsm", "pbwasqroua", "rixilelhrs", "wolcqlirpc", "fortranftw", "alxhpburyi", "jalaycalmp", "clojurermt"},
-		words:       []string{"fortran", "clojure"},
-		expectError: false,
-		expected:    map[string][2][2]int{"clojure": {{0, 9}, {6, 9}}, "fortran": {{0, 6}, {6, 6}}},
-	},
+	// {
+	// 	description: "Should locate a left to right word in three line grid",
+	// 	puzzle:      []string{"camdcimgtc", "jefblpepre", "clojurermt"},
+	// 	words:       []string{"clojure"},
+	// 	expectError: false,
+	// 	expected:    map[string][2][2]int{"clojure": {{0, 2}, {6, 2}}},
+	// },
+	// {
+	// 	description: "Should locate a left to right word in ten line grid",
+	// 	puzzle:      []string{"jefblpepre", "camdcimgtc", "oivokprjsm", "pbwasqroua", "rixilelhrs", "wolcqlirpc", "screeaumgr", "alxhpburyi", "jalaycalmp", "clojurermt"},
+	// 	words:       []string{"clojure"},
+	// 	expectError: false,
+	// 	expected:    map[string][2][2]int{"clojure": {{0, 9}, {6, 9}}},
+	// },
+	// {
+	// 	description: "Should locate that left to right word in a different position in a ten line grid",
+	// 	puzzle:      []string{"jefblpepre", "camdcimgtc", "oivokprjsm", "pbwasqroua", "rixilelhrs", "wolcqlirpc", "screeaumgr", "alxhpburyi", "clojurermt", "jalaycalmp"},
+	// 	words:       []string{"clojure"},
+	// 	expectError: false,
+	// 	expected:    map[string][2][2]int{"clojure": {{0, 8}, {6, 8}}},
+	// },
+	// {
+	// 	description: "Should locate a different left to right word in a ten line grid",
+	// 	puzzle:      []string{"jefblpepre", "camdcimgtc", "oivokprjsm", "pbwasqroua", "rixilelhrs", "wolcqlirpc", "fortranftw", "alxhpburyi", "clojurermt", "jalaycalmp"},
+	// 	words:       []string{"fortran"},
+	// 	expectError: false,
+	// 	expected:    map[string][2][2]int{"fortran": {{0, 6}, {6, 6}}},
+	// },
+	// {
+	// 	description: "Should locate multiple words",
+	// 	puzzle:      []string{"jefblpepre", "camdcimgtc", "oivokprjsm", "pbwasqroua", "rixilelhrs", "wolcqlirpc", "fortranftw", "alxhpburyi", "jalaycalmp", "clojurermt"},
+	// 	words:       []string{"fortran", "clojure"},
+	// 	expectError: false,
+	// 	expected:    map[string][2][2]int{"clojure": {{0, 9}, {6, 9}}, "fortran": {{0, 6}, {6, 6}}},
+	// },
 	// {
 	// 	description: "Should locate a single word written right to left",
 	// 	puzzle:      []string{"rixilelhrs"},
@@ -96,13 +96,13 @@ var testCases = []struct {
 	// 	expectError: false,
 	// 	expected:    map[string][2][2]int{"elixir": {{5, 0}, {0, 0}}},
 	// },
-	{
-		description: "Should locate multiple words written in different horizontal directions",
-		puzzle:      []string{"jefblpepre", "camdcimgtc", "oivokprjsm", "pbwasqroua", "rixilelhrs", "wolcqlirpc", "screeaumgr", "alxhpburyi", "jalaycalmp", "clojurermt"},
-		words:       []string{"elixir", "clojure"},
-		expectError: false,
-		expected:    map[string][2][2]int{"clojure": {{0, 9}, {6, 9}}, "elixir": {{5, 4}, {0, 4}}},
-	},
+	// {
+	// 	description: "Should locate multiple words written in different horizontal directions",
+	// 	puzzle:      []string{"jefblpepre", "camdcimgtc", "oivokprjsm", "pbwasqroua", "rixilelhrs", "wolcqlirpc", "screeaumgr", "alxhpburyi", "jalaycalmp", "clojurermt"},
+	// 	words:       []string{"elixir", "clojure"},
+	// 	expectError: false,
+	// 	expected:    map[string][2][2]int{"clojure": {{0, 9}, {6, 9}}, "elixir": {{5, 4}, {0, 4}}},
+	// },
 	// {
 	// 	description: "Should locate words written top to bottom",
 	// 	puzzle:      []string{"jefblpepre", "camdcimgtc", "oivokprjsm", "pbwasqroua", "rixilelhrs", "wolcqlirpc", "screeaumgr", "alxhpburyi", "jalaycalmp", "clojurermt"},

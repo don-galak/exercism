@@ -1,8 +1,14 @@
 package wordsearch
 
 import (
+	"errors"
 	"strings"
 )
+
+type direction struct {
+	i int
+	j int
+}
 
 func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 	result := make(map[string][2][2]int)
@@ -11,14 +17,29 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 		result[w] = [2][2]int{{-1, -1}, {-1, -1}}
 	}
 
-	for i, p := range puzzle {
-		for _, w := range words {
-			first := strings.Index(p, w)
-			if first == -1 {
-				continue
+	// rows := len(puzzle)
+	// cols := len(puzzle[0])
+
+	for _, w := range words {
+		for x, p := range puzzle {
+			firstLetterIndex := strings.Index(p, string(w[0]))
+			if firstLetterIndex > -1 {
+				lastLetterIndex := strings.LastIndex(p, string(w[len(w)-1]))
+				result[w] = [2][2]int{{firstLetterIndex, x}, {lastLetterIndex, x}}
+				// println(x, firstLetterIndex)
+				// dir := direction{-1, -1}
+				// if x+1 >= rows || x-1 < 0 {
+				// 	dir.i = 0
+				// }
+				// if firstLetterIndex+1 >= cols || firstLetterIndex-1 < 0 {
+				// 	dir.j = 0
+				// }
+
+				break
 			}
-			last := first + len(w) - 1
-			result[w] = [2][2]int{{first, i}, {last, i}}
+			if firstLetterIndex < 0 {
+				err = errors.New("")
+			}
 		}
 	}
 
