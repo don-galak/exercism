@@ -5,11 +5,6 @@ import (
 	"strings"
 )
 
-type direction struct {
-	i int
-	j int
-}
-
 const cols = 9
 
 func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
@@ -26,76 +21,101 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 		for x, p := range puzzle {
 			firstLetterIndex := strings.Index(p, string(w[0]))
 			if firstLetterIndex > -1 {
-				// result[w] = [2][2]int{{firstLetterIndex, x}, {lastLetterIndex, x}}
-				// println(x, firstLetterIndex)
-				// dir := direction{0, 0}
-				availableCells := getAvailableCellsBasedOnCollision(x, firstLetterIndex, rows, cols)
 
-				for _, cell := range availableCells {
-					i := cell[0]
-					j := cell[1]
-					println(i, j)
-					if string(w[1]) == string(puzzle[i][j]) {
-						println("TO BRIKAME")
+				steps := getAvailableStepsBasedOnCollision(x, firstLetterIndex, rows, cols)
+
+				for _, step := range steps {
+					xStep := step[0]
+					yStep := step[1]
+					i := x
+					j := firstLetterIndex
+
+					possibleMatch := ""
+
+					for k := 0; k < len(w); k++ {
+						if isOutOfBounds(i, j, rows, cols) {
+							break
+						}
+
+						if w[k] == puzzle[i][j] {
+							possibleMatch += string(puzzle[i][j])
+							if possibleMatch == w {
+								result[w] = [2][2]int{{firstLetterIndex, x}, {j, i}}
+								println("FOUND IT")
+								foundWord = true
+								break
+							}
+							i += xStep
+							j += yStep
+							continue
+						}
+						break
 					}
 				}
 			}
 		}
 	}
 	if !foundWord {
+		// err = nil
 		err = errors.New("")
-
 	}
 
 	return result, err
 }
 
-func getAvailableCellsBasedOnCollision(x, y, rows, cols int) [][2]int {
+func isOutOfBounds(i, j, rows, cols int) bool {
+	if i > rows-1 || j > cols-1 || i < 0 || j < 0 {
+		return true
+	}
+	return false
+}
+
+func getAvailableStepsBasedOnCollision(x, y, rows, cols int) [][2]int {
 	collisionRight := y == cols
 	collisionLeft := y == 0
 	collisionTop := x == 0
 	collisionBottom := x+1 >= rows
 
 	if collisionBottom && collisionTop && !collisionLeft && !collisionRight {
-		return [][2]int{{0, y + 1}, {0, y - 1}}
+		return [][2]int{{0, 1}, {0, -1}}
 	}
 	if collisionBottom && collisionTop && collisionLeft && !collisionRight {
-		return [][2]int{{0, y + 1}}
+		return [][2]int{{0, 1}}
 	}
 	if collisionBottom && collisionTop && !collisionLeft && collisionRight {
-		return [][2]int{{0, y - 1}}
+		return [][2]int{{0, -1}}
 	}
 	if collisionRight && collisionBottom && !collisionTop {
-		return [][2]int{{x - 1, y}, {x, y - 1}, {x - 1, y - 1}}
+		return [][2]int{{-1, 0}, {0, -1}, {-1, -1}}
 	}
 	if collisionLeft && collisionBottom && !collisionTop {
-		return [][2]int{{x - 1, y}, {x, y + 1}, {x - 1, y + 1}}
+		return [][2]int{{-1, 0}, {0, 1}, {-1, 1}}
 	}
 	if collisionTop && collisionLeft && !collisionBottom {
-		return [][2]int{{x + 1, y}, {x, y + 1}, {x + 1, y + 1}}
+		return [][2]int{{1, 0}, {0, 1}, {1, 1}}
 	}
 	if collisionTop && collisionRight && !collisionBottom {
-		return [][2]int{{x + 1, y}, {x, y - 1}, {x + 1, y - 1}}
+		return [][2]int{{1, 0}, {0, -1}, {1, -1}}
 	}
 	if collisionLeft && !collisionBottom && !collisionTop {
-		return [][2]int{{x - 1, y}, {x + 1, y + 1}, {x, y + 1}, {x + 1, y + 1}, {x + 1, y}}
+		return [][2]int{{-1, 0}, {1, 1}, {0, 1}, {1, 1}, {1, 0}}
 	}
 	if collisionRight && !collisionBottom && !collisionTop {
-		return [][2]int{{x - 1, y}, {x - 1, y - 1}, {x, y - 1}, {x + 1, y - 1}, {x + 1, y}}
+		return [][2]int{{-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}}
 	}
 	if collisionTop && !collisionRight && collisionLeft {
-		return [][2]int{{x, y - 1}, {x + 1, y - 1}, {x + 1, y}, {x + 1, y + 1}, {x, y + 1}}
+		return [][2]int{{0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}}
 	}
 	if collisionBottom && !collisionRight && collisionLeft {
-		return [][2]int{{x, y - 1}, {x - 1, y - 1}, {x - 1, y}, {x - 1, y - 1}, {x, y + 1}}
+		return [][2]int{{0, -1}, {-1, -1}, {-1, 0}, {-1, -1}, {0, 1}}
 	}
-	return [][2]int{{x - 1, y - 1}, {x - 1, y}, {x - 1, y + 1}, {x, y - 1}, {x + 1, y - 1}, {x + 1, y}, {x + 1, y + 1}, {x, y + 1}}
+	return [][2]int{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 0}, {0, 1}, {1, -1}, {1, 0}, {1, 1}}
 }
 
 // make [][]slice of input puzzle
 // range over and find first letter of first word in slice
 // find at which direction lies the next letter
-// right, left, top, bottom, top-right, top-left, bottom-right, bottom-left
+// right, left, top, bottom, t-right, top-left, bottom-right, bottom-left
 // increment/decrement i,j as steps accordingly
 // repeat until word is complete
 // repeat steps for next word
