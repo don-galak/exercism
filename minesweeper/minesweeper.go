@@ -10,23 +10,23 @@ var directions = [][2]int{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, 
 
 func Annotate(board []string) []string {
 	rows := len(board)
-	if rows == 0 || len(board[0]) == 1 {
+	if rows == 0 {
 		return board
 	}
 
-	SECOND := make([][]string, len(board))
-	for i := range SECOND {
-		SECOND[i] = make([]string, len(board[0]))
+	temp := make([][]string, len(board))
+	for i := range temp {
+		temp[i] = make([]string, len(board[0]))
 	}
 
 	for i, row := range board {
 		for j, c := range row {
-			SECOND[i][j] = string(c)
+			temp[i][j] = string(c)
 		}
 	}
 	cols := len(board[0])
 
-	for i, row := range SECOND {
+	for i, row := range temp {
 		for j := range row {
 			for _, d := range directions {
 				x, y := i, j
@@ -36,23 +36,23 @@ func Annotate(board []string) []string {
 					continue
 				}
 
-				if SECOND[x][y] == "*" {
-					if SECOND[i][j] == " " {
-						SECOND[i][j] = "1"
+				if temp[x][y] == "*" {
+					if temp[i][j] == " " {
+						temp[i][j] = "1"
 						continue
 					}
-
-					if n, err := strconv.Atoi(SECOND[i][j]); err == nil {
-						SECOND[i][j] = fmt.Sprintf("%d", n+1)
+					if n, err := strconv.Atoi(temp[i][j]); err == nil {
+						temp[i][j] = fmt.Sprintf("%d", n+1)
 					}
 				}
 			}
 		}
 	}
 
-	for i, row := range SECOND {
-		board[i] = strings.Join(row, "")
+	annotated := make([]string, len(board))
+	for i, row := range temp {
+		annotated[i] = strings.Join(row, "")
 	}
 
-	return board
+	return annotated
 }
