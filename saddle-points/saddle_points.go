@@ -1,8 +1,35 @@
 package matrix
 
-type Pair struct {
-	i int
-	j int
+import (
+	"errors"
+	"strconv"
+	"strings"
+)
+
+type Pair struct{ i, j int }
+type Matrix [][]int
+
+func New(s string) (*Matrix, error) {
+	rows := strings.Split(s, "\n")
+	var matrix Matrix
+
+	for i, row := range rows {
+		r := strings.Fields(row)
+		if i > 0 && len(r) != len(matrix[i-1]) {
+			return nil, errors.New("matrix rows have inconsistent length")
+		}
+
+		matrix = append(matrix, []int{})
+		for _, char := range r {
+			value, err := strconv.Atoi(char)
+			if err != nil {
+				return nil, err
+			}
+			matrix[i] = append(matrix[i], value)
+		}
+	}
+
+	return &matrix, nil
 }
 
 func (m *Matrix) Saddle() []Pair {
