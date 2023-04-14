@@ -32,32 +32,26 @@ func New(s string) (*Matrix, error) {
 	return &matrix, nil
 }
 
+func (m *Matrix) isSaddlePoint(i, j int) bool {
+	for c := range (*m)[0] {
+		if (*m)[i][c] > (*m)[i][j] {
+			return false
+		}
+	}
+	for r := range *m {
+		if (*m)[r][j] < (*m)[i][j] {
+			return false
+		}
+	}
+	return true
+}
 func (m *Matrix) Saddle() []Pair {
 	pairs := []Pair{}
-	for i, r := range *m {
-		for j, el := range r {
-			saddleInRow := true
-			for x, rowItem := range (*m)[i] {
-				if x != j && rowItem > el {
-					saddleInRow = false
-					break
-				}
+	for i, row := range *m {
+		for j := range row {
+			if m.isSaddlePoint(i, j) {
+				pairs = append(pairs, Pair{i + 1, j + 1})
 			}
-			if !saddleInRow {
-				continue
-			}
-			saddleInCol := true
-			for y, col := range *m {
-				if y != i && col[j] < el {
-					saddleInCol = false
-					break
-				}
-			}
-			if !saddleInCol {
-				continue
-			}
-
-			pairs = append(pairs, Pair{i + 1, j + 1})
 		}
 	}
 	return pairs
