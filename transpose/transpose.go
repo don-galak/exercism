@@ -6,7 +6,6 @@ import (
 )
 
 func Transpose(input []string) []string {
-	println("&", '&')
 	s := make([]string, len(input))
 
 	var b bytes.Buffer
@@ -26,7 +25,7 @@ func Transpose(input []string) []string {
 		}
 
 		if rowLen < biggestRowBellowCurrentRow {
-			b.WriteString(strings.Repeat(" ", biggestRowBellowCurrentRow-rowLen))
+			b.WriteString(strings.Repeat("-", biggestRowBellowCurrentRow-rowLen))
 		} else if rowLen < biggestRow {
 			b.WriteString(strings.Repeat("&", biggestRow-rowLen))
 		}
@@ -40,6 +39,10 @@ func Transpose(input []string) []string {
 
 	for j := 0; j < len(transposed); j++ {
 		for i := 0; i < len(input); i++ {
+			if j < len(s[i]) {
+				continue
+			}
+			println(i, j, j < biggestRow, biggestRow, j < len(s[i]))
 			if s[i][j] == '&' {
 				continue
 			}
