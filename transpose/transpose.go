@@ -12,7 +12,6 @@ func Transpose(input []string) []string {
 	biggestRowBellowCurrentRow := 0
 	biggestRow := 0
 	for i, row := range input {
-
 		for x := i + 1; x < len(input); x++ {
 			if l := len(input[x]); l > biggestRowBellowCurrentRow {
 				biggestRowBellowCurrentRow = l
@@ -25,13 +24,10 @@ func Transpose(input []string) []string {
 		}
 
 		if rowLen < biggestRowBellowCurrentRow {
-			b.WriteString(strings.Repeat("-", biggestRowBellowCurrentRow-rowLen))
-		} else if rowLen < biggestRow {
-			b.WriteString(strings.Repeat("&", biggestRow-rowLen))
+			b.WriteString(strings.Repeat(" ", biggestRowBellowCurrentRow-rowLen))
 		}
 
 		s[i] = b.String()
-		println(s[i])
 		b.Reset()
 		biggestRowBellowCurrentRow = 0
 	}
@@ -39,12 +35,8 @@ func Transpose(input []string) []string {
 
 	for j := 0; j < len(transposed); j++ {
 		for i := 0; i < len(input); i++ {
-			if j < len(s[i]) {
-				continue
-			}
-			println(i, j, j < biggestRow, biggestRow, j < len(s[i]))
-			if s[i][j] == '&' {
-				continue
+			if j >= len(s[i]) || s[i][j] == '&' {
+				break
 			}
 			b.WriteByte(s[i][j])
 		}
