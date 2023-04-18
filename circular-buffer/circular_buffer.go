@@ -11,23 +11,21 @@ const opInvalid readOp = 0
 var ErrTooLarge = errors.New("bytes.Buffer: too large")
 
 type readOp int8
-
-// Define the Buffer type here.
 type Buffer struct {
 	buf      []byte
 	off      int
 	lastRead readOp
+	size     int
 }
 
 func NewBuffer(size int) *Buffer {
-	return &Buffer{}
+	return &Buffer{size: size}
 }
 
 func (b *Buffer) empty() bool { return len(b.buf) <= b.off }
 
 func (b *Buffer) ReadByte() (byte, error) {
 	if b.empty() {
-		// Buffer is empty, reset to recover space.
 		b.Reset()
 		return 0, io.EOF
 	}
@@ -40,7 +38,8 @@ func (b *Buffer) ReadByte() (byte, error) {
 func (b *Buffer) Len() int { return len(b.buf) - b.off }
 
 func (b *Buffer) WriteByte(c byte) error {
-	if len(b.buf) <= cap(b.buf) {
+	if len(b.buf) < b.size {
+		println(string(c))
 		b.buf = append(b.buf, c)
 		return nil
 	}
@@ -48,7 +47,9 @@ func (b *Buffer) WriteByte(c byte) error {
 }
 
 func (b *Buffer) Overwrite(c byte) {
-	b.WriteByte(c)
+	if err := b.WriteByte(c); err != nil {
+		b.buf = append(b.buf[1:], c)
+	}
 }
 
 func (b *Buffer) Reset() {
