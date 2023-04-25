@@ -59,12 +59,12 @@ var testCases = []struct {
 		expected:    Win,
 		wantErr:     false,
 	},
-	// {
-	// 	description: "Finished game where X won via bottom row victory",
-	// 	board:       []string{" OO", "O X", "XXX"},
-	// 	expected:    Win,
-	// 	wantErr:     false,
-	// },
+	{
+		description: "Finished game where X won via bottom row victory",
+		board:       []string{" OO", "O X", "XXX"},
+		expected:    Win,
+		wantErr:     false,
+	},
 	{
 		description: "Finished game where O won via top row victory",
 		board:       []string{"OOO", "XXO", "XX "},
@@ -119,18 +119,18 @@ var testCases = []struct {
 		expected:    Win,
 		wantErr:     false,
 	},
-	// {
-	// 	description: "Draw",
-	// 	board:       []string{"XOX", "XXO", "OXO"},
-	// 	expected:    Draw,
-	// 	wantErr:     false,
-	// },
-	// {
-	// 	description: "Another draw",
-	// 	board:       []string{"XXO", "OXX", "XOO"},
-	// 	expected:    Draw,
-	// 	wantErr:     false,
-	// },
+	{
+		description: "Draw",
+		board:       []string{"XOX", "XXO", "OXO"},
+		expected:    Draw,
+		wantErr:     false,
+	},
+	{
+		description: "Another draw",
+		board:       []string{"XXO", "OXX", "XOO"},
+		expected:    Draw,
+		wantErr:     false,
+	},
 	{
 		description: "Ongoing game: one move in",
 		board:       []string{"   ", "X  ", "   "},
@@ -149,28 +149,28 @@ var testCases = []struct {
 		expected:    Ongoing,
 		wantErr:     false,
 	},
-	// {
-	// 	description: "Invalid board: X went twice",
-	// 	board:       []string{"XX ", "   ", "   "},
-	// 	expected:    "",
-	// 	wantErr:     true,
-	// },
-	// {
-	// 	description: "Invalid board: O started",
-	// 	board:       []string{"OOX", "   ", "   "},
-	// 	expected:    "",
-	// 	wantErr:     true,
-	// },
-	// {
-	// 	description: "Invalid board: X won and O kept playing",
-	// 	board:       []string{"XXX", "OOO", "   "},
-	// 	expected:    "",
-	// 	wantErr:     true,
-	// },
-	// {
-	// 	description: "Invalid board: players kept playing after a win",
-	// 	board:       []string{"XXX", "OOO", "XOX"},
-	// 	expected:    "",
-	// 	wantErr:     true,
-	// },
+	{
+		description: "Invalid board: X went twice",
+		board:       []string{"XX ", "   ", "   "},
+		expected:    "",
+		wantErr:     true,
+	},
+	{
+		description: "Invalid board: O started",
+		board:       []string{"OOX", "   ", "   "},
+		expected:    "",
+		wantErr:     true,
+	},
+	{
+		description: "Invalid board: X won and O kept playing",
+		board:       []string{"XXX", "OOO", "   "},
+		expected:    "",
+		wantErr:     true,
+	},
+	{
+		description: "Invalid board: players kept playing after a win",
+		board:       []string{"XXX", "OOO", "XOX"},
+		expected:    "",
+		wantErr:     true,
+	},
 }

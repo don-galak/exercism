@@ -1,37 +1,39 @@
 package stateoftictactoe
 
+import "errors"
+
 type State string
 
-const (
-	Win     State = "win"
-	Ongoing State = "ongoing"
-	Draw    State = "draw"
-)
+const Win, Draw, Ongoing State = "win", "draw", "ongoing"
 
-var directions = []struct {
-	x int
-	y int
-	// }{{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}}
-}{{0, 1}, {1, -1}, {1, 0}, {1, 1}}
-
-func StateOfTicTacToe(board []string) (State, error) {
-	for i, row := range board {
-		for j := range row {
-			for _, d := range directions {
-				x, y := i, j
-				x += d.x
-				y += d.y
-
-				if x >= 3 || y >= 3 || x < 0 || y < 0 || x+d.x >= 3 || x+d.x < 0 || y+d.y >= 3 || y-d.y < 0 {
-					continue
-				}
-
-				if (board[i][j] == 'X' && board[x][y] == 'X' && board[x+d.x][y+d.y] == 'X') ||
-					board[i][j] == 'O' && board[x][y] == 'O' && board[x+d.x][y+d.y] == 'O' {
-					return Win, nil
-				}
+func getPlayerStats(pl byte, board []string) (count int, won bool) {
+	for i := range board {
+		for j := range board[i] {
+			if board[i][j] == pl {
+				count++
 			}
 		}
 	}
+	for i := 0; i < 3; i++ {
+		if board[i][0] == pl && board[i][1] == pl && board[i][2] == pl ||
+			board[0][i] == pl && board[1][i] == pl && board[2][i] == pl {
+			return count, true
+		}
+	}
+	return count, board[0][0] == pl && board[1][1] == pl && board[2][2] == pl || board[0][2] == pl && board[1][1] == pl && board[2][0] == pl
+}
+
+func StateOfTicTacToe(board []string) (State, error) {
+	Xcount, XWon := getPlayerStats('X', board)
+	Ocount, OWon := getPlayerStats('O', board)
+
+	if Xcount != Ocount && Xcount != Ocount+1 || XWon && OWon {
+		return "", errors.New("invalid")
+	} else if XWon || OWon {
+		return Win, nil
+	} else if Xcount+Ocount == 9 {
+		return Draw, nil
+	}
 	return Ongoing, nil
+
 }
