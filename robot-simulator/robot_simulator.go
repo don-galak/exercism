@@ -54,6 +54,7 @@ func StartRobot(command chan Command, action chan Action) {
 	for c := range command {
 		action <- Action(c)
 	}
+	action <- 0
 }
 
 func Room(extent Rect, robot Step2Robot, action chan Action, report chan Step2Robot) {
@@ -90,9 +91,10 @@ func Room(extent Rect, robot Step2Robot, action chan Action, report chan Step2Ro
 			} else {
 				robot.Dir--
 			}
+		case 0:
+			report <- robot
 		}
 	}
-	report <- robot
 }
 
 // Step 3
