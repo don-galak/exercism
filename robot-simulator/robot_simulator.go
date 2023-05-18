@@ -104,8 +104,24 @@ func StartRobot3(name, script string, action chan Action3, log chan string) {
 }
 
 func Room3(extent Rect, robots []Step3Robot, action chan Action3, rep chan []Step3Robot, log chan string) {
+	robotIndexes := make(map[string]int)
+	robotPositions := make(map[int]bool)
+
+	for i, r := range robots {
+		if len(r.Name) == 0 || r.Easting < extent.Min.Easting || r.Easting > extent.Max.Easting || r.Northing < extent.Min.Northing || r.Northing > extent.Max.Northing {
+			log <- "no name"
+			rep <- robots
+		}
+		robotIndexes[r.Name] = i
+		robotPositions[(int(r.Easting)-int(r.Northing))*(int(r.Easting)+int(r.Northing))] = true
+	}
+	if len(robotIndexes) != len(robots) || len(robotPositions) != len(robots) {
+		log <- "same name"
+		rep <- robots
+	}
+
 	for a := range action {
-		index := findRobotIndex(robots, a.robotName)
+		index := robotIndexes[a.robotName]
 		switch a.command {
 		case 'A':
 			switch robots[index].Dir {
@@ -144,13 +160,4 @@ func advance(direction *RU, border RU, step RU, log chan string) {
 	} else {
 		log <- "bump in wall"
 	}
-}
-
-func findRobotIndex(robots []Step3Robot, name string) int {
-	for i := range robots {
-		if robots[i].Name == name {
-			return i
-		}
-	}
-	return -1
 }

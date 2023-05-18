@@ -83,85 +83,85 @@ func TestOneStep3(t *testing.T) {
 	}
 }
 
-// func TestNoName(t *testing.T) {
-// 	log := make(chan string)
-// 	nMsg := make(chan int)
-// 	go logMon(log, nMsg, t)
-// 	act := make(chan Action3)
-// 	rep := make(chan []Step3Robot)
-// 	go Room3(
-// 		Rect{Pos{1, 1}, Pos{1, 1}},
-// 		[]Step3Robot{{"", Step2Robot{N, Pos{1, 1}}}},
-// 		act, rep, log)
-// 	go StartRobot3("", "", act, log)
-// 	<-rep
-// 	close(log)
-// 	if n := <-nMsg; n != 1 {
-// 		t.Fatalf("Got %d messages, want 1.", n)
-// 	}
-// }
+func TestNoName(t *testing.T) {
+	log := make(chan string)
+	nMsg := make(chan int)
+	go logMon(log, nMsg, t)
+	act := make(chan Action3)
+	rep := make(chan []Step3Robot)
+	go Room3(
+		Rect{Pos{1, 1}, Pos{1, 1}},
+		[]Step3Robot{{"", Step2Robot{N, Pos{1, 1}}}},
+		act, rep, log)
+	go StartRobot3("", "", act, log)
+	<-rep
+	close(log)
+	if n := <-nMsg; n != 1 {
+		t.Fatalf("Got %d messages, want 1.", n)
+	}
+}
 
-// func TestSameName(t *testing.T) {
-// 	log := make(chan string)
-// 	nMsg := make(chan int)
-// 	go logMon(log, nMsg, t)
-// 	act := make(chan Action3)
-// 	rep := make(chan []Step3Robot)
-// 	go Room3(
-// 		Rect{Pos{1, 1}, Pos{2, 1}},
-// 		[]Step3Robot{
-// 			{"Daryl", Step2Robot{N, Pos{1, 1}}},
-// 			{"Daryl", Step2Robot{N, Pos{2, 1}}},
-// 		},
-// 		act, rep, log)
-// 	go StartRobot3("Daryl", "", act, log)
-// 	go StartRobot3("Daryl", "", act, log)
-// 	<-rep
-// 	close(log)
-// 	if n := <-nMsg; n != 1 {
-// 		t.Fatalf("Got %d messages, want 1.", n)
-// 	}
-// }
+func TestSameName(t *testing.T) {
+	log := make(chan string)
+	nMsg := make(chan int)
+	go logMon(log, nMsg, t)
+	act := make(chan Action3)
+	rep := make(chan []Step3Robot)
+	go Room3(
+		Rect{Pos{1, 1}, Pos{2, 1}},
+		[]Step3Robot{
+			{"Daryl", Step2Robot{N, Pos{1, 1}}},
+			{"Daryl", Step2Robot{N, Pos{2, 1}}},
+		},
+		act, rep, log)
+	go StartRobot3("Daryl", "", act, log)
+	go StartRobot3("Daryl", "", act, log)
+	<-rep
+	close(log)
+	if n := <-nMsg; n != 1 {
+		t.Fatalf("Got %d messages, want 1.", n)
+	}
+}
 
-// func TestSamePosition(t *testing.T) {
-// 	log := make(chan string)
-// 	nMsg := make(chan int)
-// 	go logMon(log, nMsg, t)
-// 	act := make(chan Action3)
-// 	rep := make(chan []Step3Robot)
-// 	go Room3(
-// 		Rect{Pos{1, 1}, Pos{100, 100}},
-// 		[]Step3Robot{
-// 			{"Matter", Step2Robot{N, Pos{23, 47}}},
-// 			{"Antimatter", Step2Robot{N, Pos{23, 47}}},
-// 		},
-// 		act, rep, log)
-// 	go StartRobot3("Matter", "", act, log)
-// 	go StartRobot3("Antimatter", "", act, log)
-// 	<-rep
-// 	close(log)
-// 	if n := <-nMsg; n != 1 {
-// 		t.Fatalf("Got %d messages, want 1.", n)
-// 	}
-// }
+func TestSamePosition(t *testing.T) {
+	log := make(chan string)
+	nMsg := make(chan int)
+	go logMon(log, nMsg, t)
+	act := make(chan Action3)
+	rep := make(chan []Step3Robot)
+	go Room3(
+		Rect{Pos{1, 1}, Pos{100, 100}},
+		[]Step3Robot{
+			{"Matter", Step2Robot{N, Pos{23, 47}}},
+			{"Antimatter", Step2Robot{N, Pos{23, 47}}},
+		},
+		act, rep, log)
+	go StartRobot3("Matter", "", act, log)
+	go StartRobot3("Antimatter", "", act, log)
+	<-rep
+	close(log)
+	if n := <-nMsg; n != 1 {
+		t.Fatalf("Got %d messages, want 1.", n)
+	}
+}
 
-// func TestOutsideRoom(t *testing.T) {
-// 	log := make(chan string)
-// 	nMsg := make(chan int)
-// 	go logMon(log, nMsg, t)
-// 	act := make(chan Action3)
-// 	rep := make(chan []Step3Robot)
-// 	go Room3(
-// 		Rect{Pos{1, 1}, Pos{1, 1}},
-// 		[]Step3Robot{{"Elvis", Step2Robot{N, Pos{2, 3}}}},
-// 		act, rep, log)
-// 	go StartRobot3("Elvis", "", act, log)
-// 	<-rep
-// 	close(log)
-// 	if n := <-nMsg; n != 1 {
-// 		t.Fatalf("Got %d messages, want 1.", n)
-// 	}
-// }
+func TestOutsideRoom(t *testing.T) {
+	log := make(chan string)
+	nMsg := make(chan int)
+	go logMon(log, nMsg, t)
+	act := make(chan Action3)
+	rep := make(chan []Step3Robot)
+	go Room3(
+		Rect{Pos{1, 1}, Pos{1, 1}},
+		[]Step3Robot{{"Elvis", Step2Robot{N, Pos{2, 3}}}},
+		act, rep, log)
+	go StartRobot3("Elvis", "", act, log)
+	<-rep
+	close(log)
+	if n := <-nMsg; n != 1 {
+		t.Fatalf("Got %d messages, want 1.", n)
+	}
+}
 
 // func TestBadCommand(t *testing.T) {
 // 	log := make(chan string)
@@ -181,23 +181,23 @@ func TestOneStep3(t *testing.T) {
 // 	}
 // }
 
-// func TestBadRobot(t *testing.T) {
-// 	log := make(chan string)
-// 	nMsg := make(chan int)
-// 	go logMon(log, nMsg, t)
-// 	act := make(chan Action3)
-// 	rep := make(chan []Step3Robot)
-// 	go Room3(
-// 		Rect{Pos{0, 0}, Pos{0, 0}},
-// 		[]Step3Robot{{"Data", Step2Robot{N, Pos{0, 0}}}},
-// 		act, rep, log)
-// 	go StartRobot3("Lore", "A", act, log)
-// 	<-rep
-// 	close(log)
-// 	if n := <-nMsg; n != 1 {
-// 		t.Fatalf("Got %d messages, want 1.", n)
-// 	}
-// }
+func TestBadRobot(t *testing.T) {
+	log := make(chan string)
+	nMsg := make(chan int)
+	go logMon(log, nMsg, t)
+	act := make(chan Action3)
+	rep := make(chan []Step3Robot)
+	go Room3(
+		Rect{Pos{0, 0}, Pos{0, 0}},
+		[]Step3Robot{{"Data", Step2Robot{N, Pos{0, 0}}}},
+		act, rep, log)
+	go StartRobot3("Lore", "A", act, log)
+	<-rep
+	close(log)
+	if n := <-nMsg; n != 1 {
+		t.Fatalf("Got %d messages, want 1.", n)
+	}
+}
 
 // func TestThree(t *testing.T) { // no bumping
 // 	log := make(chan string)
