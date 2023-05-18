@@ -98,6 +98,11 @@ type Action3 struct {
 
 func StartRobot3(name, script string, action chan Action3, log chan string) {
 	for _, command := range script {
+		if command != 'R' && command != 'A' && command != 'L' && command != ' ' {
+			log <- "bad command"
+			action <- Action3{command: 0}
+			return
+		}
 		action <- Action3{name, command}
 	}
 	action <- Action3{command: 0}
@@ -156,7 +161,7 @@ func advance(direction *RU, border RU, step RU, log chan string) {
 	result := (*direction) + step
 
 	if step == 1 && result <= border || step == -1 && result >= border {
-		*direction = *direction + step
+		*direction += step
 	} else {
 		log <- "bump in wall"
 	}

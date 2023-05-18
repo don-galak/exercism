@@ -163,23 +163,23 @@ func TestOutsideRoom(t *testing.T) {
 	}
 }
 
-// func TestBadCommand(t *testing.T) {
-// 	log := make(chan string)
-// 	nMsg := make(chan int)
-// 	go logMon(log, nMsg, t)
-// 	act := make(chan Action3)
-// 	rep := make(chan []Step3Robot)
-// 	go Room3(
-// 		Rect{Pos{0, 0}, Pos{0, 99}},
-// 		[]Step3Robot{{"Vgr", Step2Robot{N, Pos{0, 99}}}},
-// 		act, rep, log)
-// 	go StartRobot3("Vgr", "RET", act, log)
-// 	<-rep
-// 	close(log)
-// 	if n := <-nMsg; n != 1 {
-// 		t.Fatalf("Got %d messages, want 1.", n)
-// 	}
-// }
+func TestBadCommand(t *testing.T) {
+	log := make(chan string)
+	nMsg := make(chan int)
+	go logMon(log, nMsg, t)
+	act := make(chan Action3)
+	rep := make(chan []Step3Robot)
+	go Room3(
+		Rect{Pos{0, 0}, Pos{0, 99}},
+		[]Step3Robot{{"Vgr", Step2Robot{N, Pos{0, 99}}}},
+		act, rep, log)
+	go StartRobot3("Vgr", "RET", act, log)
+	<-rep
+	close(log)
+	if n := <-nMsg; n != 1 {
+		t.Fatalf("Got %d messages, want 1.", n)
+	}
+}
 
 func TestBadRobot(t *testing.T) {
 	log := make(chan string)
