@@ -110,29 +110,13 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, rep chan []Ste
 		case 'A':
 			switch robots[index].Dir {
 			case N:
-				if robots[index].Northing+1 <= extent.Max.Northing {
-					robots[index].Northing++
-				} else {
-					log <- "bump"
-				}
+				advance(&robots[index].Northing, extent.Max.Northing, 1, log)
 			case S:
-				if robots[index].Northing-1 >= extent.Min.Northing {
-					robots[index].Northing--
-				} else {
-					log <- "bump"
-				}
+				advance(&robots[index].Northing, extent.Min.Northing, -1, log)
 			case W:
-				if robots[index].Easting-1 >= extent.Min.Easting {
-					robots[index].Easting--
-				} else {
-					log <- "bump"
-				}
+				advance(&robots[index].Easting, extent.Min.Easting, -1, log)
 			case E:
-				if robots[index].Easting+1 <= extent.Max.Easting {
-					robots[index].Easting++
-				} else {
-					log <- "bump"
-				}
+				advance(&robots[index].Easting, extent.Max.Easting, 1, log)
 			}
 		case 'R':
 			if robots[index].Dir == W {
@@ -152,17 +136,15 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, rep chan []Ste
 	}
 }
 
-// func advance(direction *RU, border RU, step RU, log chan string) {
-// 	switch step {
-// 	case 1:
-// 		if (*direction)+step <= border {
-// 			*direction = *direction + step
-// 			// robots[index].Northing++
-// 		} else {
-// 			log <- "bump"
-// 		}
-// 	}
-// }
+func advance(direction *RU, border RU, step RU, log chan string) {
+	result := (*direction) + step
+
+	if step == 1 && result <= border || step == -1 && result >= border {
+		*direction = *direction + step
+	} else {
+		log <- "bump in wall"
+	}
+}
 
 func findRobotIndex(robots []Step3Robot, name string) int {
 	for i := range robots {
