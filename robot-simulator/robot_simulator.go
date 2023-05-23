@@ -109,6 +109,7 @@ func StartRobot3(name, script string, action chan Action3, log chan string) {
 }
 
 func Room3(extent Rect, robots []Step3Robot, action chan Action3, rep chan []Step3Robot, log chan string) {
+	defer close(rep)
 	robotIndexes := make(map[string]int)
 	robotPositions := make(map[int]bool)
 
@@ -129,16 +130,7 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, rep chan []Ste
 		index := robotIndexes[a.robotName]
 		switch a.command {
 		case 'A':
-			switch robots[index].Dir {
-			case N:
-				advance(&robots[index].Northing, extent.Max.Northing, 1, log)
-			case S:
-				advance(&robots[index].Northing, extent.Min.Northing, -1, log)
-			case W:
-				advance(&robots[index].Easting, extent.Min.Easting, -1, log)
-			case E:
-				advance(&robots[index].Easting, extent.Max.Easting, 1, log)
-			}
+			advance(&robots, index, extent, log)
 		case 'R':
 			if robots[index].Dir == W {
 				robots[index].Dir = N
@@ -157,10 +149,46 @@ func Room3(extent Rect, robots []Step3Robot, action chan Action3, rep chan []Ste
 	}
 }
 
-func advance(direction *RU, border RU, step RU, log chan string) {
+func advance(robots *[]Step3Robot, index int, extent Rect, log chan string) {
+	var direction *RU
+	var border RU
+	var step RU
+	var newPos Pos
+
+	switch (*robots)[index].Dir {
+	case N:
+		direction = &(*robots)[index].Northing
+		border = extent.Max.Northing
+		step = 1
+		newPos = Pos{(*robots)[index].Easting, (*robots)[index].Northing + 1}
+	case S:
+		direction = &(*robots)[index].Northing
+		border = extent.Min.Northing
+		step = -1
+		newPos = Pos{(*robots)[index].Easting, (*robots)[index].Northing - 1}
+	case W:
+		direction = &(*robots)[index].Easting
+		border = extent.Min.Easting
+		step = -1
+		newPos = Pos{(*robots)[index].Easting - 1, (*robots)[index].Northing}
+	case E:
+		direction = &(*robots)[index].Easting
+		border = extent.Max.Easting
+		step = 1
+		newPos = Pos{(*robots)[index].Easting + 1, (*robots)[index].Northing}
+	}
+
 	result := (*direction) + step
 
 	if step == 1 && result <= border || step == -1 && result >= border {
+
+		for i, r := range *robots {
+			if i != index && r.Pos == newPos {
+				log <- "bump in robot"
+				return
+			}
+		}
+
 		*direction += step
 	} else {
 		log <- "bump in wall"
