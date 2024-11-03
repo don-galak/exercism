@@ -1,10 +1,19 @@
 defmodule WineCellar do
   def explain_colors do
-    # Please implement the explain_colors/0 function
+    [
+      {:white, "Fermented without skin contact."},
+      {:red, "Fermented with skin contact using dark-colored grapes."},
+      {:rose, "Fermented with some skin contact, but not enough to qualify as a red wine."}
+    ]
   end
 
   def filter(cellar, color, opts \\ []) do
-    # Please implement the filter/3 function
+    year = opts[:year]
+    country = opts[:country]
+
+    wines = Keyword.get_values(cellar, color)
+    wines = if country, do: filter_by_country(wines, country), else: wines
+    if year, do: filter_by_year(wines, year), else: wines
   end
 
   # The functions below do not need to be modified.
