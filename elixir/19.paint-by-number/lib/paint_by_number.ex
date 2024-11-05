@@ -1,15 +1,14 @@
 defmodule PaintByNumber do
-  def palette_bit_size(color_count) do
-    # Please implement the palette_bit_size/1 function
+  def palette_bit_size(color_count, n \\ 0) do
+    cond do
+      Integer.pow(2, n) >= color_count -> n
+      true -> palette_bit_size(color_count, n + 1)
+    end
   end
 
-  def empty_picture() do
-    # Please implement the empty_picture/0 function
-  end
+  def empty_picture(), do: <<>>
 
-  def test_picture() do
-    # Please implement the test_picture/0 function
-  end
+  def test_picture(), do: <<0::2, 1::2, 2::2, 3::2>>
 
   def prepend_pixel(picture, color_count, pixel_color_index) do
     # Please implement the prepend_pixel/3 function
@@ -27,3 +26,9 @@ defmodule PaintByNumber do
     # Please implement the concat_pictures/2 function
   end
 end
+
+# 001
+# 010
+# 011
+# 110
+# 111
