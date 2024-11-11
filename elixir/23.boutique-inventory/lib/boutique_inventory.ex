@@ -1,15 +1,10 @@
 defmodule BoutiqueInventory do
-  def sort_by_price(inventory) do
-    # Please implement the sort_by_price/1 function
-  end
+  def sort_by_price(inventory), do: Enum.sort(inventory, fn a, b -> a.price <= b.price end)
 
-  def with_missing_price(inventory) do
-    # Please implement the with_missing_price/1 function
-  end
+  def with_missing_price(inventory), do: Enum.filter(inventory, fn item -> item.price == nil end)
 
-  def update_names(inventory, old_word, new_word) do
-    # Please implement the update_names/3 function
-  end
+  def update_names(inventory, old_word, new_word),
+    do: Enum.map(inventory, fn item -> String.replace(item.name, old_word, new_word) end)
 
   def increase_quantity(item, count) do
     # Please implement the increase_quantity/2 function
