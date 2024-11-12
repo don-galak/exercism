@@ -3,8 +3,11 @@ defmodule BoutiqueInventory do
 
   def with_missing_price(inventory), do: Enum.filter(inventory, fn item -> item.price == nil end)
 
-  def update_names(inventory, old_word, new_word),
-    do: Enum.map(inventory, fn item -> String.replace(item.name, old_word, new_word) end)
+  def update_names(inventory, old_word, new_word) do
+    Enum.map(inventory, fn %{name: name}=item ->
+      %{item | name: String.replace(name, old_word, new_word)}
+    end)
+  end
 
   def increase_quantity(item, count) do
     # Please implement the increase_quantity/2 function
