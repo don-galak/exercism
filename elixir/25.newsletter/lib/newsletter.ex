@@ -9,12 +9,9 @@ defmodule Newsletter do
     pid
   end
 
-  def log_sent_email(pid, email) do
-  end
+  def log_sent_email(pid, email), do: IO.puts(pid, email)
 
-  def close_log(pid) do
-    # Please implement the close_log/1 function
-  end
+  def close_log(pid), do: File.close(pid)
 
   def send_newsletter(emails_path, log_path, send_fun) do
     # Please implement the send_newsletter/3 function
