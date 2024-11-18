@@ -5,16 +5,25 @@ defmodule Plot do
 end
 
 defmodule CommunityGarden do
-  def start(opts) do
-    # Please implement the start/1 function
+  def start(opts \\ []) do
+    Agent.start(fn -> [] end, opts)
   end
 
   def list_registrations(pid) do
-    # Please implement the list_registrations/1 function
+    Agent.get(pid, fn state -> state end)
   end
 
   def register(pid, register_to) do
-    # Please implement the register/2 function
+    Agent.update(pid, fn state ->
+      if state[:plot_id] == nil do
+        %Plot{plot_id: 0, registered_to: register_to}
+      else
+        %Plot{plot_id: state + 1, registered_to: register_to}
+      end
+    end)
+
+    # Agent.
+    list_registrations(pid)
   end
 
   def release(pid, plot_id) do
