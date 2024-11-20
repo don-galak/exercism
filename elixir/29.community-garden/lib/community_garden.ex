@@ -5,25 +5,18 @@ defmodule Plot do
 end
 
 defmodule CommunityGarden do
-  def start(opts \\ []) do
-    Agent.start(fn -> [] end, opts)
-  end
+  def start(_opts \\ []), do: Agent.start_link(fn -> %{plots: [], id: 1} end)
 
   def list_registrations(pid) do
-    Agent.get(pid, fn state -> state end)
+    Agent.get(pid, fn %{plots: plots} -> plots end)
   end
 
   def register(pid, register_to) do
-    Agent.update(pid, fn state ->
-      if state[:plot_id] == nil do
-        %Plot{plot_id: 0, registered_to: register_to}
-      else
-        %Plot{plot_id: state + 1, registered_to: register_to}
-      end
+    Agent.get_and_update(pid, fn %{plots: plots, id: id} ->
+      id = id + 1
+      plot = %Plot{plot_id: id, registered_to: register_to}
+      {plot, %{plots: [plot | plots], id: id}}
     end)
-
-    # Agent.
-    list_registrations(pid)
   end
 
   def release(pid, plot_id) do
